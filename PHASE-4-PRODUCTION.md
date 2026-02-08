@@ -115,6 +115,74 @@ const results = await renderVariantMatrix({
 // ... etc
 ```
 
+### Smart Proxies (Preview Before Full Render)
+
+When generating 72+ variants, rendering full-quality versions to review layout changes is wasteful. Smart Proxies generate low-fidelity previews in seconds.
+
+```tsx
+import { renderProxyMatrix, ProxyMode } from '@remotion-reloaded/variants';
+
+// Generate wireframe previews of all variants
+const previews = await renderProxyMatrix({
+  composition: 'ProductAd',
+  matrix: {
+    platforms: ['tiktok', 'youtube', 'instagram-feed'],
+    durations: [15, 30],
+    variants: ['professional', 'playful'],
+  },
+  proxyMode: 'wireframe',  // or 'lowres', 'keyframes', 'storyboard'
+  outputDir: './previews',
+});
+
+// Proxy modes:
+// - 'wireframe': Colored boxes with labels, no assets loaded (~2s per variant)
+// - 'lowres': 360p with simplified effects (~10s per variant)
+// - 'keyframes': Static images at key moments (~1s per variant)
+// - 'storyboard': Grid of keyframes as single image (~0.5s per variant)
+```
+
+#### Proxy Configuration
+
+```tsx
+const previews = await renderProxyMatrix({
+  composition: 'ProductAd',
+  matrix: variantMatrix,
+  proxyMode: 'keyframes',
+  proxyConfig: {
+    keyframeCount: 6,              // Extract 6 frames per variant
+    resolution: { width: 480 },    // Scale to 480p
+    skipEffects: true,             // Disable GPU effects
+    skipAudio: true,               // No audio processing
+    placeholderAssets: true,       // Use colored boxes for images/video
+  },
+  outputFormat: 'webp',            // Fast, small previews
+});
+```
+
+#### Review Workflow
+
+```tsx
+import { ProxyReviewer } from '@remotion-reloaded/variants';
+
+// Generate interactive review page
+await ProxyReviewer.generate({
+  previews: previews,
+  outputPath: './review/index.html',
+  features: {
+    sideBy Side: true,           // Compare variants
+    approve: true,               // Mark variants for full render
+    annotate: true,              // Add notes to specific variants
+  }
+});
+
+// After review, render only approved variants
+const approved = await ProxyReviewer.getApproved('./review');
+await renderVariantMatrix({
+  ...config,
+  filter: approved,              // Only render approved variants
+});
+```
+
 ---
 
 ## 4.2 Intelligent Asset System
@@ -518,6 +586,140 @@ const keyframes = await extractKeyframes('reference.mp4', {
 
 ---
 
+## 4.5 Visual Critic Agent (Automated QA)
+
+### Concept
+
+An automated quality assurance system that analyzes rendered frames before the user sees them, catching common issues and optionally auto-correcting safe fixes.
+
+### Critique Pipeline
+
+```tsx
+import { VisualCritic, CritiqueRules } from '@remotion-reloaded/production';
+
+const critique = await VisualCritic.analyze({
+  composition: 'ProductAd',
+  rules: [
+    CritiqueRules.contrastWCAG('AA'),      // Text contrast
+    CritiqueRules.textReadability(),        // Font size, motion blur
+    CritiqueRules.safeZoneViolations(),     // Platform safe zones
+    CritiqueRules.motionBlurText(),         // Text during fast motion
+    CritiqueRules.flashingContent(),        // Epilepsy safety
+    CritiqueRules.brandCompliance(brand),   // Brand DNA rules
+  ],
+  sampleFrames: 'auto',  // or specific frame numbers
+});
+
+// Returns:
+{
+  passed: false,
+  score: 0.85,
+  issues: [
+    {
+      rule: 'contrast-wcag-aa',
+      severity: 'error',
+      frame: 450,
+      element: '.subtitle',
+      message: 'Text contrast is 3.2:1, minimum required is 4.5:1',
+      suggestion: 'Add dark overlay behind text or increase font weight',
+      autoFixable: true,
+    },
+    {
+      rule: 'motion-blur-text',
+      severity: 'warning',
+      frame: 120,
+      element: '.cta-button',
+      message: 'Text is unreadable due to motion blur during whip pan',
+      suggestion: 'Pause text animation during transition or reduce blur',
+      autoFixable: false,
+    },
+    {
+      rule: 'safe-zone-violation',
+      severity: 'warning',
+      frame: 200,
+      platform: 'tiktok',
+      message: 'CTA button overlaps TikTok UI zone (bottom 15%)',
+      suggestion: 'Move element up by 80px',
+      autoFixable: true,
+    }
+  ]
+}
+```
+
+### Auto-Fix (Conservative)
+
+```tsx
+import { VisualCritic } from '@remotion-reloaded/production';
+
+// Only auto-fix safe, reversible issues
+const fixed = await VisualCritic.autoFix({
+  composition: 'ProductAd',
+  issues: critique.issues,
+  allowedFixes: [
+    'add-contrast-overlay',      // Add dark layer behind text
+    'increase-font-weight',      // Bump font weight for readability
+    'adjust-safe-zone-position', // Move elements into safe zones
+  ],
+  disallowedFixes: [
+    'reposition-layout',         // Don't change composition structure
+    'modify-timing',             // Don't change animation timing
+    'remove-effects',            // Don't remove user-specified effects
+  ],
+});
+
+// Returns patched composition with changes logged
+{
+  success: true,
+  changes: [
+    {
+      type: 'add-contrast-overlay',
+      element: '.subtitle',
+      frames: [430, 470],
+      details: 'Added rgba(0,0,0,0.4) overlay behind text'
+    }
+  ]
+}
+```
+
+### CI/CD Integration
+
+```yaml
+# .github/workflows/video-qa.yml
+- name: Run Visual Critic
+  run: npx remotion-critic analyze --composition ProductAd --fail-on error
+
+# Or in render pipeline:
+- name: Render with QA
+  run: npx remotion render ProductAd --critic --auto-fix safe
+```
+
+### Custom Critique Rules
+
+```tsx
+import { createCritiqueRule } from '@remotion-reloaded/production';
+
+const noRedForPositive = createCritiqueRule({
+  name: 'no-red-positive-metrics',
+  description: 'Red should not be used for positive metrics',
+  check: async (frame, context) => {
+    const positiveElements = context.findElements('.metric.positive');
+    for (const el of positiveElements) {
+      const color = await el.getComputedStyle('color');
+      if (isRedish(color)) {
+        return {
+          severity: 'error',
+          message: `Positive metric uses red color: ${color}`,
+          element: el.selector,
+        };
+      }
+    }
+    return null;  // Passed
+  },
+});
+```
+
+---
+
 ## Production Infrastructure
 
 ### Render Queue
@@ -621,3 +823,6 @@ const estimate = await estimateCost({
 - [ ] Style transfer produces visually coherent results
 - [ ] Cost estimation within 20% of actual costs
 - [ ] AI agent can orchestrate full production pipelines
+- [ ] Smart proxies render 10x faster than full quality
+- [ ] Visual Critic catches 90%+ of accessibility issues
+- [ ] Auto-fix resolves contrast issues without breaking layout

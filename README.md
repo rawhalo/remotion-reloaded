@@ -15,13 +15,25 @@ Enable AI agents to create videos that feel *directed*, not just *coded*—with 
 ```
 remotion-reloaded/
 ├── README.md                          # This file
+├── CLAUDE.md                          # AI assistant guidance
 ├── PRD.md                             # Product Requirements Document (overview)
-├── SKILL.md                           # AI Agent Skill Definition
+├── SKILL.md                           # AI Agent Skill Definition (legacy)
 │
-├── PHASE-1-TECHNICAL-FOUNDATION.md    # GSAP, WebGPU, Effects
+├── PHASE-1-TECHNICAL-FOUNDATION.md    # GSAP, WebGPU, Effects, DX
 ├── PHASE-2-CINEMATOGRAPHY.md          # Camera, Motion, Transitions, Time
-├── PHASE-3-INTELLIGENCE.md            # Style, Audio, Layout, Narrative
-├── PHASE-4-PRODUCTION.md              # Variants, Assets, Data, Analysis
+├── PHASE-3-INTELLIGENCE.md            # Style, Audio, Layout, Narrative, Brand DNA
+├── PHASE-4-PRODUCTION.md              # Variants, Assets, Data, Analysis, Visual QA
+│
+├── PLAN_ASSESSMENT_AND_IDEAS.md       # External review and expansion proposals
+├── FUTURE-IDEAS.md                    # Out-of-scope ideas for future consideration
+│
+├── skills/                            # AI Agent Skills (Remotion Skills format)
+│   ├── SKILL.md                       # Main skill entry point
+│   └── rules/                         # Individual rule files
+│       ├── animation-selection.md
+│       ├── gsap-basics.md
+│       ├── effects-basics.md
+│       └── ...
 │
 └── [future: src/]                     # Implementation code
 ```
@@ -130,23 +142,60 @@ A **middle path** that combines:
 
 ---
 
-## Quick Start (Future)
+## Quick Start
+
+### New Project (Recommended)
 
 ```bash
-# Install Remotion Reloaded packages
-npm install @remotion-reloaded/gsap @remotion-reloaded/three @remotion-reloaded/effects
+# Create a new project with everything configured
+npx create-remotion-reloaded my-video-project
+cd my-video-project
 
-# Or all-in-one
-npm install remotion-reloaded
+# Open in AI-enabled editor
+cursor .   # or: claude
+
+# Preview
+npm run preview
 ```
+
+### Existing Remotion Project
+
+```bash
+# Install packages
+npm install remotion-reloaded
+
+# Auto-configure (patches remotion.config.ts, adds skills)
+npx remotion-reloaded init
+
+# Verify setup
+npx remotion-reloaded doctor
+```
+
+### Using with AI Agents
+
+The project includes skill files that teach AI assistants (Claude Code, Cursor, etc.) how to use Remotion Reloaded:
+
+```bash
+# Skills are installed automatically, or add manually:
+npx skills add remotion-reloaded/skills
+```
+
+Then just describe what you want:
+- *"Create a logo reveal with a purple glow effect"*
+- *"Add kinetic text animation that reveals character by character"*
+- *"Create a product showcase with rotating 3D model and particles"*
+
+### Example Code
 
 ```tsx
 import { useGSAP } from '@remotion-reloaded/gsap';
 import { Effect } from '@remotion-reloaded/effects';
+import { AbsoluteFill } from 'remotion';
+import { useEffect } from 'react';
 
 export const MyVideo = () => {
   const { timeline, scopeRef } = useGSAP();
-  
+
   useEffect(() => {
     timeline
       .from('.title', { y: 100, opacity: 0, ease: 'power3.out' })

@@ -105,15 +105,15 @@ import { useStyle } from '@remotion-reloaded/style';
 
 const MyComponent = () => {
   const style = useStyle();
-  
+
   // Access computed values
-  const { 
+  const {
     colors,           // { primary, secondary, accent, background, text }
     motion,           // { defaultEase, defaultDuration, staggerDelay }
     typography,       // { headingFont, bodyFont, scale }
     transitions,      // { default, dramatic, subtle }
   } = style;
-  
+
   return (
     <div style={{ color: colors.primary }}>
       <GSAPTimeline ease={motion.defaultEase}>
@@ -123,6 +123,146 @@ const MyComponent = () => {
   );
 };
 ```
+
+### Brand DNA System
+
+Beyond individual style properties, brands have a holistic "physics"—how they move, what they avoid, and what constraints they enforce. The Brand DNA system formalizes this.
+
+#### Brand Configuration File
+
+```json
+// .brand.json (or brand.config.ts)
+{
+  "name": "Acme Corp",
+  "version": "1.0",
+
+  "motion": {
+    "signature": "luxury",
+    "spring": { "damping": 25, "stiffness": 80 },
+    "defaultEase": "power2.out",
+    "transitionSpeed": 0.8
+  },
+
+  "colors": {
+    "primary": "#1a1a2e",
+    "accent": "#e94560",
+    "allowed": ["#1a1a2e", "#e94560", "#ffffff", "#f5f5f5"],
+    "forbidden": ["#ff0000", "#00ff00"]
+  },
+
+  "constraints": {
+    "logo": {
+      "minSize": 48,
+      "clearSpace": "10%",
+      "positions": ["top-left", "bottom-right"],
+      "neverOn": ["busy-backgrounds", "low-contrast"]
+    },
+    "typography": {
+      "maxFonts": 2,
+      "headingFont": "Playfair Display",
+      "bodyFont": "Inter"
+    },
+    "colorRules": [
+      { "never": "red", "for": "positive-metrics" },
+      { "always": "accent", "for": "cta-buttons" }
+    ],
+    "motionRules": [
+      { "never": "bounce", "for": "serious-content" },
+      { "prefer": "fade", "for": "transitions" }
+    ]
+  },
+
+  "signatures": {
+    "luxury": {
+      "description": "Moves like a heavy luxury car—slow, smooth, deliberate",
+      "spring": { "damping": 30, "stiffness": 60 },
+      "ease": "power1.inOut",
+      "transitionDuration": 1.2
+    },
+    "tech": {
+      "description": "Moves like a responsive app—snappy, precise, efficient",
+      "spring": { "damping": 15, "stiffness": 200 },
+      "ease": "power3.out",
+      "transitionDuration": 0.4
+    },
+    "playful": {
+      "description": "Moves like a bouncy ball—elastic, overshooting, fun",
+      "spring": { "damping": 8, "stiffness": 150 },
+      "ease": "back.out(1.7)",
+      "transitionDuration": 0.6
+    }
+  }
+}
+```
+
+#### Brand Provider
+
+```tsx
+import { BrandProvider, useBrand } from '@remotion-reloaded/style';
+import brandConfig from './brand.config';
+
+<BrandProvider config={brandConfig}>
+  <MyComposition />
+</BrandProvider>
+
+// In components:
+const MyComponent = () => {
+  const brand = useBrand();
+
+  return (
+    <div style={{
+      color: brand.colors.primary,
+      fontFamily: brand.constraints.typography.headingFont
+    }}>
+      <GSAPTimeline ease={brand.motion.defaultEase}>
+        ...
+      </GSAPTimeline>
+    </div>
+  );
+};
+```
+
+#### Brand Validation
+
+The system validates compositions against brand constraints at build time:
+
+```tsx
+import { validateBrand } from '@remotion-reloaded/style';
+
+const violations = await validateBrand(composition, brandConfig);
+
+// Returns:
+[
+  {
+    type: 'color-violation',
+    message: 'Used #ff0000 which is in forbidden colors',
+    frame: 45,
+    element: '.error-text',
+    severity: 'error'
+  },
+  {
+    type: 'motion-violation',
+    message: 'Used bounce easing for serious-content section',
+    frame: 120,
+    element: '.hero-title',
+    severity: 'warning'
+  },
+  {
+    type: 'logo-violation',
+    message: 'Logo appears on busy background without contrast overlay',
+    frame: 200,
+    severity: 'error'
+  }
+]
+```
+
+#### AI Agent Brand Enforcement
+
+When a brand config is present, the AI agent:
+1. Reads `.brand.json` before generating any composition
+2. Auto-applies motion signature to all animations
+3. Validates generated code against constraints
+4. Rejects or auto-corrects violations before presenting to user
 
 ---
 
@@ -265,6 +405,77 @@ import { OnBeat, OnBar, OnDrop } from '@remotion-reloaded/audio';
 </OnDrop>
 ```
 
+### Semantic Audio Sync (Stretch Goal)
+
+Beyond beat detection, understand the *meaning* of audio content and sync visuals semantically.
+
+```tsx
+import { SemanticAudioSync, OnWord, OnPhrase } from '@remotion-reloaded/audio';
+
+// Analyze speech/lyrics and trigger on specific words
+<SemanticAudioSync
+  src={staticFile('voiceover.mp3')}
+  transcript={transcript}  // Or auto-transcribe
+>
+  {({ currentWord, currentPhrase, sentiment, keywords }) => (
+    <ResponsiveContent
+      highlight={keywords.includes(currentWord)}
+      mood={sentiment}
+    />
+  )}
+</SemanticAudioSync>
+
+// Trigger visual events on specific words
+<OnWord word="skyrocket" tolerance={0.1}>
+  {(timestamp) => (
+    <GraphSpike direction="up" at={timestamp} />
+  )}
+</OnWord>
+
+<OnWord word="crash" tolerance={0.1}>
+  {(timestamp) => (
+    <GraphDrop at={timestamp} />
+  )}
+</OnWord>
+
+// React to phrases/sentences
+<OnPhrase match="introducing our new product">
+  {(startTime, endTime) => (
+    <ProductReveal from={startTime} to={endTime} />
+  )}
+</OnPhrase>
+```
+
+#### Semantic Timing Analysis
+
+```tsx
+import { analyzeSemanticTiming } from '@remotion-reloaded/audio';
+
+const timing = await analyzeSemanticTiming(audioFile, {
+  transcript: true,
+  sentiment: true,
+  keywords: ['launch', 'growth', 'innovation'],
+});
+
+// Returns:
+{
+  words: [
+    { word: 'introducing', start: 0.5, end: 1.2, sentiment: 'neutral' },
+    { word: 'revolutionary', start: 1.3, end: 2.1, sentiment: 'positive' },
+    // ...
+  ],
+  keywordTimestamps: [
+    { keyword: 'growth', timestamp: 5.4 },
+    { keyword: 'innovation', timestamp: 12.1 },
+  ],
+  sentimentCurve: [
+    { time: 0, sentiment: 0.5 },
+    { time: 5, sentiment: 0.8 },
+    // ...
+  ]
+}
+```
+
 ---
 
 ## 3.3 Design Intelligence
@@ -320,6 +531,52 @@ import { SafeZone, PlatformOverlay } from '@remotion-reloaded/layout';
 | YouTube | Bottom 20% (progress bar, info), top corners (logo, subscribe) |
 | Instagram Feed | Minimal, mostly safe |
 | Twitter/X | Bottom bar consideration |
+
+### Content-Aware Safe Zones (Stretch Goal)
+
+Beyond static platform safe zones, analyze video/image content to find optimal placement.
+
+```tsx
+import { SaliencyAnalysis, ContentAwareSafeZone } from '@remotion-reloaded/layout';
+
+// Pre-analyze footage for saliency (faces, key objects)
+const saliencyMap = await analyzeSaliency(videoFile, {
+  detectFaces: true,
+  detectText: true,
+  detectObjects: ['logo', 'product'],
+  keyframes: 'auto',  // or specific frame numbers
+});
+
+// Use saliency data to place content in negative space
+<ContentAwareSafeZone
+  saliency={saliencyMap}
+  avoid={['faces', 'text']}
+  padding={20}
+>
+  <OverlayText>Your message here</OverlayText>
+</ContentAwareSafeZone>
+
+// Dynamic repositioning as footage changes
+<ContentAwareSafeZone
+  saliency={saliencyMap}
+  position="auto"  // Finds best position per frame
+  transitionSmoothing={0.9}  // Smooth repositioning
+>
+  <LowerThird name="John Smith" title="CEO" />
+</ContentAwareSafeZone>
+```
+
+#### Saliency Heatmap Visualization
+
+```tsx
+// Debug tool to see saliency analysis
+<SaliencyOverlay
+  saliency={saliencyMap}
+  opacity={0.5}
+  showFaces={true}
+  showSafeZones={true}
+/>
+```
 
 ### Typography Hierarchy
 
@@ -507,3 +764,7 @@ import { EnergyCurve } from '@remotion-reloaded/narrative';
 - [ ] Narrative arcs produce coherent energy progressions
 - [ ] AI agent correctly maps mood/genre/era from prompts
 - [ ] Typography hierarchy accessible (WCAG AA contrast)
+- [ ] Brand DNA validation catches constraint violations at build time
+- [ ] AI agent enforces brand constraints without manual checking
+- [ ] (Stretch) Semantic audio sync aligns keywords within ±100ms
+- [ ] (Stretch) Saliency-based safe zones avoid faces in 90%+ of cases

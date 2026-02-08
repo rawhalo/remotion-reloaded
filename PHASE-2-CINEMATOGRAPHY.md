@@ -125,14 +125,14 @@ import { ParallaxContainer, ParallaxLayer } from '@remotion-reloaded/camera';
 
 ```tsx
 // Vertigo/Dolly Zoom (Hitchcock effect)
-<VertigoZoom 
+<VertigoZoom
   start={0}
   duration={60}
   intensity={0.3}
 />
 
 // Whip Pan (fast blur transition)
-<WhipPan 
+<WhipPan
   direction="left"
   at={45}
   blurStrength={20}
@@ -140,12 +140,96 @@ import { ParallaxContainer, ParallaxLayer } from '@remotion-reloaded/camera';
 />
 
 // Lens Distortion
-<LensDistortion 
+<LensDistortion
   type="barrel"
   strength={0.1}
   animated={true}
 />
 ```
+
+### Virtual Cameraman (Behavior-Based Tracking)
+
+Instead of defining explicit camera keyframes, define *behaviors* that react to scene content.
+
+```tsx
+import { Camera, CameraBehavior } from '@remotion-reloaded/camera';
+
+// Follow a subject element
+<Camera>
+  <CameraBehavior
+    type="follow-subject"
+    subjectRef={speakerRef}
+    smoothing={0.85}
+    leadSpace={{ x: 100, y: 0 }}  // Keep subject off-center
+    bounds={{ zoom: [0.8, 1.5] }}
+  />
+
+  <Speaker ref={speakerRef} />
+  <Background />
+</Camera>
+
+// Frame multiple subjects
+<Camera>
+  <CameraBehavior
+    type="frame-group"
+    subjects={[actorARef, actorBRef]}
+    padding={0.15}  // 15% padding around group
+    reframeThreshold={50}  // Reframe when subjects move 50px
+    reframeDuration={30}   // Smooth reframe over 30 frames
+  />
+
+  <Actor ref={actorARef} />
+  <Actor ref={actorBRef} />
+</Camera>
+
+// Look-at behavior (camera points toward target)
+<Camera>
+  <CameraBehavior
+    type="look-at"
+    target={focusPointRef}
+    easing="power2.out"
+    maxRotation={15}  // Degrees
+  />
+
+  <FocusPoint ref={focusPointRef} />
+  <Content />
+</Camera>
+
+// Anticipate motion (lead the subject)
+<Camera>
+  <CameraBehavior
+    type="anticipate"
+    subjectRef={movingObjectRef}
+    anticipation={0.3}  // How far ahead to look
+    velocitySmoothing={0.9}
+  />
+
+  <MovingObject ref={movingObjectRef} />
+</Camera>
+```
+
+#### Behavior Composition
+
+Behaviors can be combined with priorities:
+
+```tsx
+<Camera>
+  <CameraBehavior type="follow-subject" subjectRef={mainRef} priority={1} />
+  <CameraBehavior type="avoid-edges" padding={0.1} priority={2} />
+  <CameraBehavior type="smooth-motion" dampening={0.9} priority={3} />
+
+  <Scene />
+</Camera>
+```
+
+#### AI Agent Mapping for Behaviors
+
+| Natural Language | Behavior Configuration |
+|------------------|------------------------|
+| "keep the speaker in frame" | `type="follow-subject"` |
+| "frame both people in the conversation" | `type="frame-group"` |
+| "camera follows the action" | `type="anticipate"` |
+| "look at the product when it appears" | `type="look-at"` |
 
 ---
 
@@ -474,3 +558,5 @@ import { TimeRemap } from '@remotion-reloaded/time';
 - [ ] Speed ramping maintains audio pitch appropriately
 - [ ] All components work with GSAP timelines from Phase 1
 - [ ] AI agent can compose scenes using natural language
+- [ ] Virtual cameraman behaviors track subjects smoothly
+- [ ] Behavior composition resolves priority conflicts correctly
