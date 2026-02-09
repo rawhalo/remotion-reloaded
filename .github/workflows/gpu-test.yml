@@ -1,0 +1,47 @@
+name: GPU Availability Test
+
+on:
+  push:
+    paths:
+      - 'spike/**'
+      - '.github/workflows/gpu-test.yml'
+  workflow_dispatch:
+
+jobs:
+  webgl-probe:
+    name: WebGL/WebGPU Probe
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install dependencies
+        working-directory: spike
+        run: npm install
+
+      - name: Run WebGL availability test
+        working-directory: spike
+        run: node tests/webgl-availability.mjs
+
+      - name: Upload probe screenshots
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: gpu-probe-screenshots
+          path: spike/out/webgl-test/
+
+  # Optional: GPU-enabled runner for WebGPU testing (nightly)
+  # Uncomment when a GPU runner is available
+  # webgpu-probe:
+  #   name: WebGPU Probe (GPU Runner)
+  #   runs-on: [self-hosted, gpu]
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - uses: actions/setup-node@v4
+  #       with:
+  #         node-version: '22'
+  #     - run: cd spike && npm install && node tests/webgl-availability.mjs

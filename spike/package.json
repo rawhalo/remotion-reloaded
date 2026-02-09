@@ -1,0 +1,28 @@
+{
+  "name": "remotion-reloaded-spike",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Stage 0 spike tasks for Remotion Reloaded",
+  "scripts": {
+    "dev": "remotion studio",
+    "build": "remotion bundle",
+    "render:still": "remotion still",
+    "render:media": "remotion render",
+    "test:gsap": "node tests/gsap-determinism.mjs",
+    "test:effects": "node tests/effects-coverage.mjs",
+    "test:webgl": "node tests/webgl-availability.mjs"
+  },
+  "dependencies": {
+    "@remotion/bundler": "^4.0.420",
+    "@remotion/cli": "^4.0.0",
+    "@remotion/renderer": "^4.0.0",
+    "gsap": "^3.12.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "remotion": "^4.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.0.0",
+    "typescript": "^5.7.0"
+  }
+}
