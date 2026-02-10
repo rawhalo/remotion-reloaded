@@ -6,6 +6,9 @@
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "bin": {
+    "remotion-reloaded": "./bin/remotion-reloaded.cjs"
+  },
   "exports": {
     ".": {
       "import": {
@@ -28,7 +31,7 @@
       }
     }
   },
-  "files": ["dist"],
+  "files": ["dist", "bin"],
   "scripts": {
     "build": "tsup",
     "typecheck": "tsc --noEmit",
@@ -39,7 +42,8 @@
     "@remotion-reloaded/config": "workspace:*",
     "@remotion-reloaded/effects": "workspace:*",
     "@remotion-reloaded/gsap": "workspace:*",
-    "@remotion-reloaded/three": "workspace:*"
+    "@remotion-reloaded/three": "workspace:*",
+    "create-remotion-reloaded": "workspace:*"
   },
   "peerDependencies": {
     "react": "^18.0.0 || ^19.0.0",

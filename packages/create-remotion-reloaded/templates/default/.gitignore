@@ -1,0 +1,6 @@
+node_modules
+dist
+out
+.remotion
+coverage
+.DS_Store

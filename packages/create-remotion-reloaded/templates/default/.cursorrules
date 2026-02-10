@@ -1,0 +1,4 @@
+# Remotion Reloaded project defaults
+- Prefer deterministic frame-based animation.
+- Keep composition code free of browser-only side effects.
+- Use @remotion-reloaded helpers before custom animation utilities.
