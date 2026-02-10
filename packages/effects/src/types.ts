@@ -3,18 +3,30 @@ import type { CSSProperties, ReactNode } from "react";
 export type BuiltInEffectType =
   | "blackAndWhite"
   | "blur"
+  | "bulge"
   | "chromaticAberration"
   | "contrast"
   | "displacement"
   | "duotone"
   | "film"
+  | "glitch"
+  | "godRays"
   | "glow"
+  | "halftone"
   | "hueSaturation"
   | "invert"
+  | "lensFlare"
+  | "motionBlur"
   | "neon"
   | "noise"
+  | "pixelate"
+  | "radialBlur"
+  | "ripple"
   | "sepia"
-  | "vignette";
+  | "tiltShift"
+  | "vignette"
+  | "vhs"
+  | "wave";
 
 export type EffectType = BuiltInEffectType | (string & {});
 
@@ -110,6 +122,98 @@ export interface NeonEffectProps extends EffectComponentBaseProps {
   radius?: number;
 }
 
+export interface GlitchEffectProps extends EffectComponentBaseProps {
+  type: "glitch";
+  blockSize?: number;
+  seed?: number;
+  strength?: number;
+}
+
+export interface WaveEffectProps extends EffectComponentBaseProps {
+  type: "wave";
+  amplitude?: number;
+  frequency?: number;
+  speed?: number;
+}
+
+export interface BulgeEffectProps extends EffectComponentBaseProps {
+  type: "bulge";
+  centerX?: number;
+  centerY?: number;
+  radius?: number;
+  strength?: number;
+}
+
+export interface RippleEffectProps extends EffectComponentBaseProps {
+  type: "ripple";
+  amplitude?: number;
+  centerX?: number;
+  centerY?: number;
+  frequency?: number;
+  speed?: number;
+}
+
+export interface PixelateEffectProps extends EffectComponentBaseProps {
+  type: "pixelate";
+  size?: number;
+}
+
+export interface MotionBlurEffectProps extends EffectComponentBaseProps {
+  type: "motionBlur";
+  angle?: number;
+  distance?: number;
+  samples?: number;
+}
+
+export interface RadialBlurEffectProps extends EffectComponentBaseProps {
+  type: "radialBlur";
+  centerX?: number;
+  centerY?: number;
+  samples?: number;
+  strength?: number;
+}
+
+export interface TiltShiftEffectProps extends EffectComponentBaseProps {
+  type: "tiltShift";
+  blur?: number;
+  falloff?: number;
+  focus?: number;
+}
+
+export interface VhsEffectProps extends EffectComponentBaseProps {
+  type: "vhs";
+  distortion?: number;
+  jitter?: number;
+  noise?: number;
+  scanlines?: number;
+}
+
+export interface HalftoneEffectProps extends EffectComponentBaseProps {
+  type: "halftone";
+  angle?: number;
+  scale?: number;
+  threshold?: number;
+}
+
+export interface GodRaysEffectProps extends EffectComponentBaseProps {
+  type: "godRays";
+  decay?: number;
+  density?: number;
+  exposure?: number;
+  lightPositionX?: number;
+  lightPositionY?: number;
+  weight?: number;
+}
+
+export interface LensFlareEffectProps extends EffectComponentBaseProps {
+  type: "lensFlare";
+  haloSize?: number;
+  intensity?: number;
+  lightPositionX?: number;
+  lightPositionY?: number;
+  streaks?: number;
+}
+
 export interface CustomEffectProps extends EffectComponentBaseProps {
   type: string & {};
   [key: string]: unknown;
@@ -118,25 +222,37 @@ export interface CustomEffectProps extends EffectComponentBaseProps {
 export type EffectProps =
   | BlackAndWhiteEffectProps
   | BlurEffectProps
+  | BulgeEffectProps
   | ChromaticAberrationEffectProps
   | ContrastEffectProps
   | CustomEffectProps
   | DisplacementEffectProps
   | DuotoneEffectProps
   | FilmEffectProps
+  | GlitchEffectProps
+  | GodRaysEffectProps
   | GlowEffectProps
+  | HalftoneEffectProps
   | HueSaturationEffectProps
   | InvertEffectProps
+  | LensFlareEffectProps
+  | MotionBlurEffectProps
   | NeonEffectProps
   | NoiseEffectProps
+  | PixelateEffectProps
+  | RadialBlurEffectProps
+  | RippleEffectProps
   | SepiaEffectProps
-  | VignetteEffectProps;
+  | TiltShiftEffectProps
+  | VhsEffectProps
+  | VignetteEffectProps
+  | WaveEffectProps;
 
 export interface EffectStackProps {
   children?: ReactNode;
 }
 
-export type EffectEngine = "composite" | "css" | "svg";
+export type EffectEngine = "composite" | "css" | "svg" | "webgl";
 
 export interface NumberParameterDefinition {
   default: number;
@@ -191,10 +307,42 @@ export type SVGFilterPlan =
       seed: number;
     };
 
+export type AdvancedWebGLEffectType = Exclude<
+  BuiltInEffectType,
+  | "blackAndWhite"
+  | "blur"
+  | "chromaticAberration"
+  | "contrast"
+  | "displacement"
+  | "duotone"
+  | "film"
+  | "glow"
+  | "hueSaturation"
+  | "invert"
+  | "noise"
+  | "sepia"
+  | "vignette"
+>;
+
+export type WebGLUniformValue =
+  | boolean
+  | number
+  | [number, number]
+  | [number, number, number];
+
+export interface WebGLFilterPlan {
+  fallbackCssFilter?: string;
+  fallbackMode: "css" | "skip";
+  kind: AdvancedWebGLEffectType;
+  shader: string;
+  uniforms: Record<string, WebGLUniformValue>;
+}
+
 export interface ResolvedEffectPlan {
   cssFilter?: string;
   overlayStyle?: CSSProperties;
   svgFilter?: SVGFilterPlan;
+  webglFilter?: WebGLFilterPlan;
   wrapperStyle?: CSSProperties;
 }
 

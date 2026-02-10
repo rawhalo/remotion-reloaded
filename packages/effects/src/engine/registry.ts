@@ -4,14 +4,27 @@ import {
   warnInvalidParameterType,
 } from "../errors";
 import { blackAndWhiteEffect } from "../effects/blackAndWhite";
+import { bulgeEffect } from "../effects/bulge";
 import { blurEffect } from "../effects/blur";
 import { chromaticAberrationEffect } from "../effects/chromaticAberration";
 import { duotoneEffect } from "../effects/duotone";
 import { filmEffect } from "../effects/film";
+import { glitchEffect } from "../effects/glitch";
+import { godRaysEffect } from "../effects/godRays";
 import { glowEffect } from "../effects/glow";
+import { halftoneEffect } from "../effects/halftone";
 import { hueSaturationEffect } from "../effects/hueSaturation";
+import { lensFlareEffect } from "../effects/lensFlare";
+import { motionBlurEffect } from "../effects/motionBlur";
+import { neonEffect } from "../effects/neon";
 import { noiseEffect } from "../effects/noise";
+import { pixelateEffect } from "../effects/pixelate";
+import { radialBlurEffect } from "../effects/radialBlur";
+import { rippleEffect } from "../effects/ripple";
 import { sepiaEffect } from "../effects/sepia";
+import { tiltShiftEffect } from "../effects/tiltShift";
+import { vhsEffect } from "../effects/vhs";
+import { waveEffect } from "../effects/wave";
 import { vignetteEffect } from "../effects/vignette";
 import type {
   BuiltInEffectType,
@@ -21,11 +34,6 @@ import type {
   ResolvedEffectPlan,
   ValidatedEffectParameters,
 } from "../types";
-import {
-  composeCssFilters,
-  createGlowFilter,
-  normalizeColor,
-} from "./cssFilter";
 
 const DEFAULT_INTENSITY_MIN = 0;
 const DEFAULT_INTENSITY_MAX = 1;
@@ -199,19 +207,24 @@ function numberValue(
   return params[key] as number;
 }
 
-function stringValue(
-  params: ValidatedEffectParameters,
-  key: string,
-): string {
-  return params[key] as string;
-}
-
 const effectDefinitions: Record<BuiltInEffectType, EffectDefinition> = {
   blur: blurEffect,
+  bulge: bulgeEffect,
   glow: glowEffect,
   vignette: vignetteEffect,
   sepia: sepiaEffect,
   blackAndWhite: blackAndWhiteEffect,
+  glitch: glitchEffect,
+  wave: waveEffect,
+  ripple: rippleEffect,
+  pixelate: pixelateEffect,
+  motionBlur: motionBlurEffect,
+  radialBlur: radialBlurEffect,
+  tiltShift: tiltShiftEffect,
+  vhs: vhsEffect,
+  halftone: halftoneEffect,
+  godRays: godRaysEffect,
+  lensFlare: lensFlareEffect,
   hueSaturation: hueSaturationEffect,
   contrast: {
     type: "contrast",
@@ -256,25 +269,7 @@ const effectDefinitions: Record<BuiltInEffectType, EffectDefinition> = {
     }),
   },
   film: filmEffect,
-  neon: {
-    type: "neon",
-    engine: "css",
-    parameters: {
-      color: { kind: "string", default: "#00ffff" },
-      radius: { kind: "number", default: 12, min: 0, max: 60 },
-    },
-    build: (params, intensity) => {
-      const color = normalizeColor(stringValue(params, "color"), "#00ffff");
-      const radius = numberValue(params, "radius");
-      return {
-        cssFilter: composeCssFilters(
-          createGlowFilter(color, radius, intensity),
-          `brightness(${(1 + 0.2 * intensity).toFixed(4)})`,
-          `saturate(${(1 + 0.4 * intensity).toFixed(4)})`,
-        ),
-      };
-    },
-  },
+  neon: neonEffect,
 };
 
 const availableEffectTypes = Object.keys(effectDefinitions).sort() as BuiltInEffectType[];
