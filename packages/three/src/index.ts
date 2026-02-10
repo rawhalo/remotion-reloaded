@@ -42,3 +42,20 @@ export {
   resolveFallbackBehavior,
   simulateCpuFallbackPositions,
 } from "./particles/cpuFallback";
+
+export {
+  EffectComposer,
+  Bloom,
+  DepthOfField,
+  ChromaticAberration,
+  Vignette,
+  Noise,
+} from "./effects";
+export type {
+  EffectComposerProps,
+  BloomProps,
+  DepthOfFieldProps,
+  ChromaticAberrationProps,
+  VignetteProps,
+  NoiseProps,
+} from "./effects";

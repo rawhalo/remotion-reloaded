@@ -10,6 +10,8 @@ export default defineConfig({
     "three",
     "three/webgpu",
     "@react-three/fiber",
+    "@react-three/postprocessing",
     "@remotion/three",
+    "postprocessing",
   ],
 });
