@@ -3,6 +3,16 @@ import {
   warnClampedParameter,
   warnInvalidParameterType,
 } from "../errors";
+import { blackAndWhiteEffect } from "../effects/blackAndWhite";
+import { blurEffect } from "../effects/blur";
+import { chromaticAberrationEffect } from "../effects/chromaticAberration";
+import { duotoneEffect } from "../effects/duotone";
+import { filmEffect } from "../effects/film";
+import { glowEffect } from "../effects/glow";
+import { hueSaturationEffect } from "../effects/hueSaturation";
+import { noiseEffect } from "../effects/noise";
+import { sepiaEffect } from "../effects/sepia";
+import { vignetteEffect } from "../effects/vignette";
 import type {
   BuiltInEffectType,
   EffectDefinition,
@@ -14,7 +24,6 @@ import type {
 import {
   composeCssFilters,
   createGlowFilter,
-  createVignetteOverlay,
   normalizeColor,
 } from "./cssFilter";
 
@@ -198,87 +207,12 @@ function stringValue(
 }
 
 const effectDefinitions: Record<BuiltInEffectType, EffectDefinition> = {
-  blur: {
-    type: "blur",
-    engine: "css",
-    parameters: {
-      radius: { kind: "number", default: 8, min: 0, max: 200 },
-    },
-    build: (params, intensity) => ({
-      cssFilter: `blur(${(numberValue(params, "radius") * intensity).toFixed(2)}px)`,
-    }),
-  },
-  glow: {
-    type: "glow",
-    engine: "css",
-    parameters: {
-      color: { kind: "string", default: "#6366f1" },
-      radius: { kind: "number", default: 20, min: 0, max: 100 },
-    },
-    build: (params, intensity) => ({
-      cssFilter: createGlowFilter(
-        normalizeColor(stringValue(params, "color"), "#6366f1"),
-        numberValue(params, "radius"),
-        intensity,
-      ),
-    }),
-  },
-  vignette: {
-    type: "vignette",
-    engine: "css",
-    parameters: {
-      darkness: { kind: "number", default: 0.4, min: 0, max: 1 },
-      offset: { kind: "number", default: 0.5, min: 0, max: 1 },
-    },
-    build: (params, intensity) => ({
-      overlayStyle: createVignetteOverlay(
-        numberValue(params, "darkness") * intensity,
-        numberValue(params, "offset"),
-      ),
-    }),
-  },
-  sepia: {
-    type: "sepia",
-    engine: "css",
-    parameters: {
-      amount: { kind: "number", default: 1, min: 0, max: 1 },
-    },
-    build: (params, intensity) => ({
-      cssFilter: `sepia(${(numberValue(params, "amount") * intensity).toFixed(4)})`,
-    }),
-  },
-  blackAndWhite: {
-    type: "blackAndWhite",
-    engine: "css",
-    parameters: {
-      amount: { kind: "number", default: 1, min: 0, max: 1 },
-    },
-    build: (params, intensity) => ({
-      cssFilter: `grayscale(${(numberValue(params, "amount") * intensity).toFixed(4)})`,
-    }),
-  },
-  hueSaturation: {
-    type: "hueSaturation",
-    engine: "css",
-    parameters: {
-      hue: { kind: "number", default: 0, min: -180, max: 180 },
-      saturation: { kind: "number", default: 0, min: -1, max: 1 },
-      lightness: { kind: "number", default: 0, min: -1, max: 1 },
-    },
-    build: (params, intensity) => {
-      const hue = numberValue(params, "hue") * intensity;
-      const saturation = 1 + numberValue(params, "saturation") * intensity;
-      const brightness = 1 + numberValue(params, "lightness") * intensity;
-
-      return {
-        cssFilter: composeCssFilters(
-          `hue-rotate(${hue.toFixed(2)}deg)`,
-          `saturate(${saturation.toFixed(4)})`,
-          `brightness(${brightness.toFixed(4)})`,
-        ),
-      };
-    },
-  },
+  blur: blurEffect,
+  glow: glowEffect,
+  vignette: vignetteEffect,
+  sepia: sepiaEffect,
+  blackAndWhite: blackAndWhiteEffect,
+  hueSaturation: hueSaturationEffect,
   contrast: {
     type: "contrast",
     engine: "css",
@@ -301,56 +235,9 @@ const effectDefinitions: Record<BuiltInEffectType, EffectDefinition> = {
       cssFilter: `invert(${(numberValue(params, "amount") * intensity).toFixed(4)})`,
     }),
   },
-  chromaticAberration: {
-    type: "chromaticAberration",
-    engine: "svg",
-    parameters: {
-      offset: { kind: "number", default: 2, min: 0, max: 20 },
-      angle: { kind: "number", default: 0, min: -360, max: 360 },
-    },
-    build: (params, intensity) => ({
-      svgFilter: {
-        kind: "chromaticAberration",
-        offset: numberValue(params, "offset") * intensity,
-        angle: numberValue(params, "angle"),
-      },
-    }),
-  },
-  noise: {
-    type: "noise",
-    engine: "svg",
-    parameters: {
-      amount: { kind: "number", default: 0.08, min: 0, max: 1 },
-      baseFrequency: { kind: "number", default: 0.8, min: 0, max: 2 },
-      octaves: { kind: "number", default: 2, min: 1, max: 8, integer: true },
-      seed: { kind: "number", default: 42, min: 0, max: 9999, integer: true },
-    },
-    build: (params, intensity) => ({
-      svgFilter: {
-        kind: "noise",
-        amount: numberValue(params, "amount") * intensity,
-        baseFrequency: numberValue(params, "baseFrequency"),
-        octaves: numberValue(params, "octaves"),
-        seed: numberValue(params, "seed"),
-      },
-    }),
-  },
-  duotone: {
-    type: "duotone",
-    engine: "svg",
-    parameters: {
-      dark: { kind: "string", default: "#1a1a2e" },
-      light: { kind: "string", default: "#e94560" },
-    },
-    build: (params, intensity) => ({
-      svgFilter: {
-        kind: "duotone",
-        dark: normalizeColor(stringValue(params, "dark"), "#1a1a2e"),
-        light: normalizeColor(stringValue(params, "light"), "#e94560"),
-        intensity,
-      },
-    }),
-  },
+  chromaticAberration: chromaticAberrationEffect,
+  noise: noiseEffect,
+  duotone: duotoneEffect,
   displacement: {
     type: "displacement",
     engine: "svg",
@@ -368,33 +255,7 @@ const effectDefinitions: Record<BuiltInEffectType, EffectDefinition> = {
       },
     }),
   },
-  film: {
-    type: "film",
-    engine: "composite",
-    parameters: {
-      grain: { kind: "number", default: 0.08, min: 0, max: 1 },
-      sepia: { kind: "number", default: 0.15, min: 0, max: 1 },
-      seed: { kind: "number", default: 21, min: 0, max: 9999, integer: true },
-      vignette: { kind: "number", default: 0.35, min: 0, max: 1 },
-    },
-    build: (params, intensity) => ({
-      cssFilter: composeCssFilters(
-        `sepia(${(numberValue(params, "sepia") * intensity).toFixed(4)})`,
-        `contrast(${(1 + 0.05 * intensity).toFixed(4)})`,
-      ),
-      overlayStyle: createVignetteOverlay(
-        numberValue(params, "vignette") * intensity,
-        0.45,
-      ),
-      svgFilter: {
-        kind: "noise",
-        amount: numberValue(params, "grain") * intensity,
-        baseFrequency: 1.1,
-        octaves: 3,
-        seed: numberValue(params, "seed"),
-      },
-    }),
-  },
+  film: filmEffect,
   neon: {
     type: "neon",
     engine: "css",
