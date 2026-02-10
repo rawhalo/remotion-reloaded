@@ -16,6 +16,46 @@
         "types": "./dist/index.d.cts",
         "default": "./dist/index.cjs"
       }
+    },
+    "./register-all": {
+      "import": {
+        "types": "./dist/register-all.d.ts",
+        "default": "./dist/register-all.js"
+      },
+      "require": {
+        "types": "./dist/register-all.d.cts",
+        "default": "./dist/register-all.cjs"
+      }
+    },
+    "./morphsvg": {
+      "import": {
+        "types": "./dist/morphsvg.d.ts",
+        "default": "./dist/morphsvg.js"
+      },
+      "require": {
+        "types": "./dist/morphsvg.d.cts",
+        "default": "./dist/morphsvg.cjs"
+      }
+    },
+    "./splittext": {
+      "import": {
+        "types": "./dist/splittext.d.ts",
+        "default": "./dist/splittext.js"
+      },
+      "require": {
+        "types": "./dist/splittext.d.cts",
+        "default": "./dist/splittext.cjs"
+      }
+    },
+    "./drawsvg": {
+      "import": {
+        "types": "./dist/drawsvg.d.ts",
+        "default": "./dist/drawsvg.js"
+      },
+      "require": {
+        "types": "./dist/drawsvg.d.cts",
+        "default": "./dist/drawsvg.cjs"
+      }
     }
   },
   "files": [
