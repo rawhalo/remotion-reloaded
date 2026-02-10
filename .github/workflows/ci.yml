@@ -34,3 +34,11 @@ jobs:
 
       - name: Test
         run: pnpm test
+
+      - name: Integration Tests (No GPU)
+        if: matrix.node-version == 20
+        run: pnpm test:integration
+
+      - name: Visual Regression
+        if: matrix.node-version == 20 && github.event_name == 'pull_request'
+        run: pnpm test:visual
