@@ -18,7 +18,9 @@
       }
     }
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsup",
     "typecheck": "tsc --noEmit",
@@ -26,8 +28,8 @@
     "test:unit": "vitest run"
   },
   "peerDependencies": {
-    "@remotion/three": "^4.0.0",
     "@react-three/fiber": "^9.0.0",
+    "@remotion/three": "^4.0.0",
     "react": "^18.0.0 || ^19.0.0",
     "remotion": "^4.0.0",
     "three": ">=0.160.0"
@@ -36,10 +38,11 @@
     "@remotion-reloaded/config": "workspace:*"
   },
   "devDependencies": {
-    "@remotion/three": "^4.0.0",
     "@react-three/fiber": "^9.0.0",
+    "@remotion/three": "^4.0.0",
     "@types/react-dom": "^19.0.0",
     "@types/react-test-renderer": "^19.0.0",
+    "@types/three": "^0.182.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-test-renderer": "^19.0.0",

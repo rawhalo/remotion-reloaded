@@ -4,6 +4,8 @@ import {
 } from "@remotion/three";
 import { useCurrentFrame, useRemotionEnvironment } from "remotion";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { WebGLRenderer } from "three";
+import { WebGPURenderer } from "three/webgpu";
 import {
   detectWebGpuSupport,
   hasWebGpuApi,
@@ -21,11 +23,6 @@ type GlProp = RemotionThreeCanvasProps["gl"];
 
 type RootStateLike = {
   advance?: (time: number) => void;
-};
-
-type WebRendererLike = {
-  init?: () => Promise<void>;
-  render?: (...args: unknown[]) => void;
 };
 
 const isFunction = (value: unknown): value is (...args: unknown[]) => unknown =>
@@ -49,32 +46,13 @@ const asGlConfig = (gl: GlProp | undefined): Record<string, unknown> | undefined
   return gl;
 };
 
-const createWebGlRenderer = async (config: Record<string, unknown>) => {
-  const moduleId = "three";
-  const module = (await import(moduleId)) as {
-    WebGLRenderer?: new (params: Record<string, unknown>) => WebRendererLike;
-  };
+const createWebGlRenderer = (config: Record<string, unknown>) =>
+  new WebGLRenderer(config);
 
-  if (!module.WebGLRenderer) {
-    throw new Error("WebGLRenderer is unavailable in installed three package.");
-  }
-
-  return new module.WebGLRenderer(config);
-};
-
-const createWebGpuRenderer = async (config: Record<string, unknown>) => {
-  const moduleId = "three/webgpu";
-  const module = (await import(moduleId)) as {
-    WebGPURenderer?: new (params: Record<string, unknown>) => WebRendererLike;
-  };
-
-  if (!module.WebGPURenderer) {
-    throw new Error("WebGPURenderer is unavailable in installed three package.");
-  }
-
-  const renderer = new module.WebGPURenderer(config);
+const createWebGpuRenderer = (config: Record<string, unknown>) => {
+  const renderer = new WebGPURenderer(config);
   if (isFunction(renderer.init)) {
-    await renderer.init();
+    void renderer.init();
   }
 
   return renderer;
@@ -173,7 +151,7 @@ export const ThreeCanvas = ({
       return mergedGlConfig;
     }
 
-    return async (defaultGlProps: unknown) => {
+    return (defaultGlProps: unknown) => {
       const defaultConfig = isObject(defaultGlProps) ? defaultGlProps : {};
       const config = {
         ...defaultConfig,
@@ -181,7 +159,7 @@ export const ThreeCanvas = ({
       };
 
       try {
-        return await createWebGpuRenderer(config);
+        return createWebGpuRenderer(config);
       } catch (error) {
         console.warn(
           "[remotion-reloaded] Failed to initialize WebGPU renderer, falling back to WebGL.",
