@@ -41,6 +41,31 @@ describe("EffectPreset", () => {
     expect(html).toContain('data-effect-type="vignette"');
   });
 
+  it("retro-vhs applies scan lines, chromatic aberration, noise, and tracking", () => {
+    const html = renderToStaticMarkup(
+      <EffectPreset name="retro-vhs">
+        <span>Retro VHS</span>
+      </EffectPreset>,
+    );
+
+    expect(html).toContain('data-effect-type="vhs"');
+    expect(html).toContain('data-effect-type="chromaticAberration"');
+    expect(html).toContain('data-effect-type="noise"');
+    expect(html).toContain('data-effect-type="glitch"');
+  });
+
+  it("cyberpunk applies neon glow, glitch, and high contrast", () => {
+    const html = renderToStaticMarkup(
+      <EffectPreset name="cyberpunk">
+        <span>Cyberpunk</span>
+      </EffectPreset>,
+    );
+
+    expect(html).toContain('data-effect-type="neon"');
+    expect(html).toContain('data-effect-type="glitch"');
+    expect(html).toContain('data-effect-type="contrast"');
+  });
+
   it("scales all preset layers with global intensity", () => {
     const full = renderToStaticMarkup(
       <EffectPreset name="dream" intensity={1}>

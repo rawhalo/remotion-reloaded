@@ -2,12 +2,19 @@ import type { ReactElement, ReactNode } from "react";
 import { Effect } from "./Effect";
 import { EffectStack } from "./EffectStack";
 import { cinematicPreset } from "../presets/cinematic";
+import { cyberpunkPreset } from "../presets/cyberpunk";
 import { dreamPreset } from "../presets/dream";
 import type { PresetEffectDescriptor } from "../presets/types";
+import { retroVhsPreset } from "../presets/retroVhs";
 import { vintagePreset } from "../presets/vintage";
 import type { EffectProps } from "../types";
 
-export type PresetName = "cinematic" | "dream" | "vintage";
+export type PresetName =
+  | "cinematic"
+  | "cyberpunk"
+  | "dream"
+  | "retro-vhs"
+  | "vintage";
 
 export interface EffectPresetProps {
   children: ReactNode;
@@ -17,7 +24,9 @@ export interface EffectPresetProps {
 
 const presetLayers: Record<PresetName, readonly PresetEffectDescriptor[]> = {
   cinematic: cinematicPreset,
+  cyberpunk: cyberpunkPreset,
   dream: dreamPreset,
+  "retro-vhs": retroVhsPreset,
   vintage: vintagePreset,
 };
 
