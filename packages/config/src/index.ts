@@ -1,4 +1,8 @@
-export { withReloaded } from "./withReloaded";
+export {
+  withReloaded,
+  type WithReloadedOptions,
+  type ReloadedConfig,
+} from "./withReloaded";
 export { getRenderEnvironment, type RenderEnvironment } from "./environment";
 export { useRenderMode, type RenderMode } from "./renderMode";
 export { checkCompatibility, type CompatibilityResult } from "./compatibility";

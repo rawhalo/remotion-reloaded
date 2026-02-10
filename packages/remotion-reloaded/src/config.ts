@@ -1,6 +1,8 @@
 // Config sub-path export: import { withReloaded } from 'remotion-reloaded/config'
 export {
   withReloaded,
+  type WithReloadedOptions,
+  type ReloadedConfig,
   getRenderEnvironment,
   type RenderEnvironment,
   useRenderMode,
