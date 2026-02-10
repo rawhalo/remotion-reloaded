@@ -1,121 +1,67 @@
-# Effects Catalog (Phase 1a)
+# Effects Catalog
 
-This catalog documents the 10 Phase 1a effects implemented in `@remotion-reloaded/effects`.
-All effects also accept:
-- `intensity?: number` (global strength, clamped to `0..1`)
+This catalog reflects the effects currently registered in `@remotion-reloaded/effects`.
+
+## Shared Props
+
+All effects accept:
 - `children?: ReactNode`
+- `className?: string`
+- `style?: CSSProperties`
+- `intensity?: number` (`0..1`, default `1`)
 
-## 1) `blur`
+## CSS Effects
 
-- Parameters: `radius?: number` (default `8`, `0..200`)
-- Engine: CSS `blur()`
+- `blur`: `radius`
+- `glow`: `color`, `radius`
+- `vignette`: `darkness`, `offset`
+- `sepia`: `amount`
+- `blackAndWhite`: `amount`
+- `hueSaturation`: `hue`, `saturation`, `lightness`
+- `contrast`: `amount`
+- `invert`: `amount`
 
-```tsx
-<Effect type="blur" radius={14}><Content /></Effect>
-```
+## SVG Effects
 
-## 2) `glow`
+- `chromaticAberration`: `offset`, `angle`
+- `noise`: `amount`, `baseFrequency`, `octaves`, `seed`
+- `duotone`: `dark`, `light`
+- `displacement`: `scale`, `baseFrequency`, `seed`
 
-- Parameters:
-- `color?: string` (default `#6366f1`)
-- `radius?: number` (default `20`, `0..100`)
-- Engine: CSS `drop-shadow()` layers
+## Composite Effects
 
-```tsx
-<Effect type="glow" color="#8b5cf6" radius={18}><Content /></Effect>
-```
+- `film`: `grain`, `sepia`, `vignette`, `seed`
 
-## 3) `vignette`
+## WebGL Effects
 
-- Parameters:
-- `darkness?: number` (default `0.4`, `0..1`)
-- `offset?: number` (default `0.5`, `0..1`)
-- Engine: radial-gradient overlay
+- `glitch`: `strength`, `blockSize`, `seed`
+- `wave`: `amplitude`, `frequency`, `speed`
+- `bulge`: `radius`, `strength`, `centerX`, `centerY`
+- `ripple`: `amplitude`, `frequency`, `speed`, `centerX`, `centerY`
+- `pixelate`: `size`
+- `motionBlur`: `distance`, `angle`, `samples`
+- `radialBlur`: `strength`, `samples`, `centerX`, `centerY`
+- `tiltShift`: `blur`, `focus`, `falloff`
+- `vhs`: `scanlines`, `distortion`, `jitter`, `noise`
+- `halftone`: `scale`, `angle`, `threshold`
+- `neon`: `color`, `radius`, `threshold`
+- `godRays`: `exposure`, `decay`, `density`, `weight`, `lightPositionX`, `lightPositionY`
+- `lensFlare`: `intensity`, `haloSize`, `streaks`, `lightPositionX`, `lightPositionY`
 
-```tsx
-<Effect type="vignette" darkness={0.45} offset={0.55}><Content /></Effect>
-```
-
-## 4) `sepia`
-
-- Parameters: `amount?: number` (default `1`, `0..1`)
-- Engine: CSS `sepia()`
-
-```tsx
-<Effect type="sepia" amount={0.6}><Content /></Effect>
-```
-
-## 5) `blackAndWhite`
-
-- Parameters: `amount?: number` (default `1`, `0..1`)
-- Engine: CSS `grayscale()`
+## Usage Example
 
 ```tsx
-<Effect type="blackAndWhite" amount={1}><Content /></Effect>
-```
+import { Effect } from '@remotion-reloaded/effects';
 
-## 6) `hueSaturation`
-
-- Parameters:
-- `hue?: number` (default `0`, `-180..180`)
-- `saturation?: number` (default `0`, `-1..1`)
-- `lightness?: number` (default `0`, `-1..1`)
-- Engine: CSS `hue-rotate() saturate() brightness()`
-
-```tsx
-<Effect type="hueSaturation" hue={12} saturation={-0.2} lightness={0.05}>
+<Effect type="lensFlare" intensity={0.7} haloSize={0.28} streaks={8}>
   <Content />
 </Effect>
 ```
 
-## 7) `chromaticAberration`
-
-- Parameters:
-- `offset?: number` (default `2`, `0..20`)
-- `angle?: number` (default `0`, `-360..360`)
-- Engine: SVG filter RGB channel offset/blend
+## Inspect Available Types at Runtime
 
 ```tsx
-<Effect type="chromaticAberration" offset={3} angle={20}><Content /></Effect>
-```
+import { getAvailableEffectTypes } from '@remotion-reloaded/effects';
 
-## 8) `noise`
-
-- Parameters:
-- `amount?: number` (default `0.08`, `0..1`)
-- `baseFrequency?: number` (default `0.8`, `0..2`)
-- `octaves?: number` (default `2`, `1..8`, integer)
-- `seed?: number` (default `42`, `0..9999`, integer)
-- Engine: SVG `feTurbulence` + blend
-
-```tsx
-<Effect type="noise" amount={0.15} baseFrequency={0.9} octaves={3} seed={99}>
-  <Content />
-</Effect>
-```
-
-## 9) `duotone`
-
-- Parameters:
-- `dark?: string` (default `#1a1a2e`)
-- `light?: string` (default `#e94560`)
-- Engine: SVG `feColorMatrix`
-
-```tsx
-<Effect type="duotone" dark="#111827" light="#f59e0b"><Content /></Effect>
-```
-
-## 10) `film`
-
-- Parameters:
-- `grain?: number` (default `0.08`, `0..1`)
-- `sepia?: number` (default `0.15`, `0..1`)
-- `vignette?: number` (default `0.35`, `0..1`)
-- `seed?: number` (default `21`, `0..9999`, integer)
-- Engine: composite (CSS grade + vignette + SVG grain)
-
-```tsx
-<Effect type="film" grain={0.12} sepia={0.2} vignette={0.3} seed={21}>
-  <Content />
-</Effect>
+const names = getAvailableEffectTypes();
 ```

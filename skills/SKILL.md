@@ -1,51 +1,56 @@
 # Remotion Reloaded Skill
 
-Practical guidance for the currently implemented Remotion Reloaded API (Phase 1a).
+Practical guidance for the currently implemented Remotion Reloaded API (Phase 1a + 1b).
 
 ## Current Scope
 
 This skill covers:
-- GSAP timeline sync via `useGSAP()`
-- Declarative GSAP timeline components
-- CSS/SVG filter effects via `<Effect>` and `<EffectStack>`
-- Preset looks via `<EffectPreset>` (`cinematic`, `vintage`, `dream`)
-- Config helpers (`withReloaded`, environment + time utilities)
+- GSAP timeline sync via `useGSAP()` and declarative timeline components
+- GSAP plugin registration and plugin-safe helpers
+- CSS/SVG/WebGL effects via `<Effect>`, `<EffectStack>`, and `<EffectPreset>`
+- Three.js canvas, renderer fallback, GPU particles, and post-processing wrappers
+- Config helpers (`withReloaded`, `getRenderEnvironment`, `useRenderMode`, time utils)
 
-This skill does not treat Three/WebGPU as available yet. Those APIs are planned for Phase 1b.
+## Decision Tree
 
-## Quick Start
-
-```tsx
-import { AbsoluteFill } from 'remotion';
-import { useGSAP, EffectPreset } from 'remotion-reloaded';
-
-export const Intro = () => {
-  const { scopeRef } = useGSAP((timeline) => {
-    timeline.from('.title', { y: 80, opacity: 0, duration: 0.8 });
-  });
-
-  return (
-    <EffectPreset name="cinematic">
-      <AbsoluteFill ref={scopeRef}>
-        <h1 className="title">Remotion Reloaded</h1>
-      </AbsoluteFill>
-    </EffectPreset>
-  );
-};
-```
+1. Use `interpolate()` / `spring()` for simple numeric motion.
+2. Use `useGSAP()` or `<GSAPTimeline>` for multi-element choreography.
+3. Use `<Effect>` / `<EffectStack>` / `<EffectPreset>` for visual grading and stylization.
+4. Use `@remotion-reloaded/three` for 3D scenes, particles, and post-processing.
+5. For platform-sensitive rendering, use config + fallback guidance in `webgpu-fallback.md`.
 
 ## Rule Files
 
 - `rules/animation-selection.md`
 - `rules/gsap-basics.md`
+- `rules/gsap-plugins.md`
+- `rules/gsap-easing.md`
 - `rules/effects-basics.md`
 - `rules/effects-catalog.md`
 - `rules/effect-presets.md`
+- `rules/effect-animation.md`
+- `rules/three-basics.md`
+- `rules/three-particles.md`
+- `rules/three-postprocessing.md`
+- `rules/webgpu-fallback.md`
+- `rules/performance.md`
+- `rules/common-patterns.md`
+- `rules/troubleshooting.md`
 
-## Configuration
+## Example Compositions
+
+- `examples/logo-reveal.tsx`
+- `examples/kinetic-text.tsx`
+- `examples/product-showcase.tsx`
+- `examples/particle-background.tsx`
+- `examples/data-counter.tsx`
+
+## Config Baseline
 
 ```ts
 import { withReloaded } from 'remotion-reloaded/config';
 
-export default withReloaded();
+export default withReloaded({
+  webgpu: true,
+});
 ```

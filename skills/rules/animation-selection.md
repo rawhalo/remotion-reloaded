@@ -1,18 +1,17 @@
 # Animation Selection Guide
 
-Use this guide to choose the simplest tool that fits the shot.
+Use this order to choose the lowest-complexity tool that still fits the shot.
 
 ## Decision Order
 
-1. Use `interpolate()` for single-property numeric tweens.
-2. Use `spring()` for physics-style motion.
-3. Use `useGSAP()` for multi-element choreography and precise sequencing.
-4. Use `<GSAPTimeline>` when you want declarative timeline instructions in JSX.
-5. Use `<Effect>` / `<EffectStack>` / `<EffectPreset>` for visual look treatment.
+1. `interpolate()` for direct numeric tweens.
+2. `spring()` for physically eased motion.
+3. `useGSAP()` for sequenced choreography and staggered timelines.
+4. `<GSAPTimeline>` for declarative timeline instructions in JSX.
+5. `<Effect>` / `<EffectStack>` / `<EffectPreset>` for visual treatment.
+6. `@remotion-reloaded/three` for 3D scenes, particles, and post-processing.
 
-## 1) `interpolate()`
-
-Best for straightforward fades, moves, scales, and counters.
+## Simple Numeric Motion
 
 ```tsx
 import { interpolate, useCurrentFrame } from 'remotion';
@@ -24,9 +23,7 @@ const opacity = interpolate(frame, [0, 20], [0, 1], {
 });
 ```
 
-## 2) `spring()`
-
-Best for natural bouncy entrances/exits.
+## Physics Motion
 
 ```tsx
 import { spring, useCurrentFrame, useVideoConfig } from 'remotion';
@@ -41,15 +38,13 @@ const scale = spring({
 });
 ```
 
-## 3) `useGSAP()`
-
-Best for layered timelines and staggered choreography.
+## Timeline Choreography
 
 ```tsx
 import { AbsoluteFill } from 'remotion';
-import { useGSAP } from 'remotion-reloaded';
+import { useGSAP } from '@remotion-reloaded/gsap';
 
-const Scene = () => {
+export const Scene = () => {
   const { scopeRef } = useGSAP((tl) => {
     tl.from('.title', { y: 80, opacity: 0, duration: 0.8 })
       .from('.subtitle', { opacity: 0, duration: 0.5 }, '-=0.3');
@@ -64,38 +59,21 @@ const Scene = () => {
 };
 ```
 
-## 4) Declarative GSAP Timeline
-
-Best when you want motion declared in JSX instead of timeline method chains.
+## Visual Treatment
 
 ```tsx
-import { GSAPTimeline, GSAPFrom, GSAPTo } from 'remotion-reloaded';
+import { EffectPreset } from '@remotion-reloaded/effects';
 
-<GSAPTimeline>
-  <GSAPFrom target=".card" duration={0.6} vars={{ y: 40, opacity: 0 }} />
-  <GSAPTo target=".card" duration={0.4} vars={{ scale: 1.05 }} />
-  <div className="card">Card</div>
-</GSAPTimeline>
+<EffectPreset name="cyberpunk" intensity={0.8}>
+  <Content />
+</EffectPreset>;
 ```
 
-## 5) Effects vs Motion
+## Three.js Workloads
 
-Use effects for look, not sequencing.
+Use `@remotion-reloaded/three` when the shot needs:
+- true 3D geometry or lighting
+- particle simulation (`<GPUParticles>`)
+- post-processing stack (`<EffectComposer>`, `<Bloom>`, etc.)
 
-```tsx
-import { EffectPreset } from 'remotion-reloaded';
-
-<EffectPreset name="dream">
-  <MyContent />
-</EffectPreset>
-```
-
-## Plugin Note
-
-GSAP Club plugins are optional. Register with either:
-- `import '@remotion-reloaded/gsap/register-all'`, or
-- targeted helpers (`registerMorphSVGPlugin`, `registerSplitTextPlugin`, `registerDrawSVGPlugin`).
-
-## Scope Note
-
-Three/WebGPU guidance is intentionally omitted here for Phase 1a. Those APIs are planned for Phase 1b.
+Avoid using R3F `useFrame()` in Remotion compositions. Drive animation from `useCurrentFrame()`.

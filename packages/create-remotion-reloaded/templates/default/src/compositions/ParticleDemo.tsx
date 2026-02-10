@@ -17,8 +17,10 @@ export const ParticleDemo = () => {
 
   return (
     <ThreeCanvas
-      renderer="auto"
+      renderer="webgpu"
       camera={{ position: [0, 0, 6], fov: 45 }}
+      width={1920}
+      height={1080}
       style={{ width: "100%", height: "100%" }}
     >
       <color attach="background" args={["#030712"]} />

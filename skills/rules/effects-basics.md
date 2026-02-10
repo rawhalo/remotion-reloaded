@@ -1,83 +1,71 @@
 # Effects Basics
 
-Remotion Reloaded effects in Phase 1a are CSS/SVG filter based (no WebGL required).
-They are deterministic and compatible with headless rendering.
+Remotion Reloaded effects support CSS, SVG, and WebGL backends through one API.
 
 ## Core Components
 
-- `<Effect>`: Apply one effect.
-- `<EffectStack>`: Compose multiple effects in order.
-- `<EffectPreset>`: Apply a named multi-effect look (`cinematic`, `vintage`, `dream`).
+- `<Effect>`: apply one effect.
+- `<EffectStack>`: compose effects in order.
+- `<EffectPreset>`: apply a named stack (`cinematic`, `vintage`, `dream`, `retro-vhs`, `cyberpunk`).
 
 ## Single Effect
 
 ```tsx
-import { Effect } from 'remotion-reloaded';
+import { Effect } from '@remotion-reloaded/effects';
 
 <Effect type="glow" color="#6366f1" radius={20}>
   <MyContent />
-</Effect>
+</Effect>;
 ```
 
-## Stacking Effects
+## Effect Stacking
 
 ```tsx
-import { Effect, EffectStack } from 'remotion-reloaded';
+import { Effect, EffectStack } from '@remotion-reloaded/effects';
 
 <EffectStack>
-  <Effect type="sepia" amount={0.5} />
-  <Effect type="noise" amount={0.12} seed={42} />
+  <Effect type="contrast" amount={1.15} />
+  <Effect type="chromaticAberration" offset={2.5} />
   <Effect type="vignette" darkness={0.35} />
   <MyContent />
-</EffectStack>
+</EffectStack>;
 ```
-
-Effects are declared top-to-bottom and applied in that order.
 
 ## Presets
 
 ```tsx
-import { EffectPreset } from 'remotion-reloaded';
+import { EffectPreset } from '@remotion-reloaded/effects';
 
-<EffectPreset name="cinematic" intensity={0.8}>
+<EffectPreset name="retro-vhs" intensity={0.75}>
   <MyContent />
-</EffectPreset>
+</EffectPreset>;
 ```
 
-## Animating Effect Parameters
+## Animating Parameters
 
 ```tsx
 import { interpolate, useCurrentFrame } from 'remotion';
-import { Effect } from 'remotion-reloaded';
+import { Effect } from '@remotion-reloaded/effects';
 
 const frame = useCurrentFrame();
-const radius = interpolate(frame, [0, 40], [0, 24], {
+const distortion = interpolate(frame, [0, 60], [0.2, 1.1], {
   extrapolateLeft: 'clamp',
   extrapolateRight: 'clamp',
 });
 
-<Effect type="blur" radius={radius}>
+<Effect type="vhs" distortion={distortion} jitter={0.35}>
   <MyContent />
-</Effect>
+</Effect>;
 ```
 
-## Determinism (Seeded Effects)
+## Render Environment Notes
 
-`noise` and `film` accept `seed` so renders are stable across preview/headless:
+- WebGL effects run in browser/local render contexts when WebGL is available.
+- On Lambda, effects with no CSS equivalent use fallback mode `skip`.
+- `neon` has a CSS fallback and remains visible when WebGL is unavailable.
 
-```tsx
-<Effect type="noise" amount={0.2} seed={123}>
-  <MyContent />
-</Effect>
-```
+## Validation Behavior
 
-## Error Behavior
-
-- Unknown `type` throws and lists available effects.
-- Invalid numeric parameters are clamped with warnings.
-- Invalid parameter types fall back to defaults with warnings.
-
-## See Also
-
-- `effects-catalog.md`
-- `effect-presets.md`
+- Unknown effect type throws with available options.
+- Invalid params are clamped or defaulted with warnings.
+- `intensity` is clamped to `0..1`.

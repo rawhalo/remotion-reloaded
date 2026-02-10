@@ -1,59 +1,55 @@
 # Effect Presets
 
-`<EffectPreset>` applies named multi-effect stacks built from the Phase 1a catalog.
+`<EffectPreset>` applies named multi-effect stacks.
 
 ```tsx
-import { EffectPreset } from 'remotion-reloaded';
+import { EffectPreset } from '@remotion-reloaded/effects';
 
-<EffectPreset name="cinematic">
+<EffectPreset name="cinematic" intensity={0.85}>
   <Content />
-</EffectPreset>
+</EffectPreset>;
 ```
 
 ## Props
 
-- `name: 'cinematic' | 'vintage' | 'dream'`
-- `intensity?: number` (global scaler, clamped to `0..1`, default `1`)
+- `name: 'cinematic' | 'vintage' | 'dream' | 'retro-vhs' | 'cyberpunk'`
+- `intensity?: number` (global multiplier, clamped `0..1`, default `1`)
 - `children: ReactNode`
 
-Global `intensity` multiplies each layer's own intensity.
-
-## Preset Definitions
+## Presets
 
 ## `cinematic`
-
-Applies:
-- `hueSaturation` (subtle cool/desat grade)
-- `film` (grain + mild sepia + vignette)
-- `vignette` (additional edge shaping)
-
-Use for: trailers, dramatic intros, product hero shots.
-
-## `vintage`
-
-Applies:
-- `sepia`
-- `noise` (seeded grain)
+- `hueSaturation`
+- `film`
 - `vignette`
 
-Use for: archival look, retro cards, old-photo style segments.
+## `vintage`
+- `sepia`
+- `noise`
+- `vignette`
 
 ## `dream`
-
-Applies:
 - `glow`
-- `hueSaturation` (desaturation + slight lift)
+- `hueSaturation`
 - `blur`
 - `vignette`
 
-Use for: memory sequences, soft beauty shots, ambient visuals.
+## `retro-vhs`
+- `vhs`
+- `chromaticAberration`
+- `noise`
+- `glitch`
+
+## `cyberpunk`
+- `neon`
+- `glitch`
+- `contrast`
+- `hueSaturation`
 
 ## Intensity Example
 
 ```tsx
-<EffectPreset name="dream" intensity={0.5}>
+<EffectPreset name="cyberpunk" intensity={0.55}>
   <Content />
 </EffectPreset>
 ```
-
-Lower values reduce all included layers proportionally.
