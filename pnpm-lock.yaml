@@ -186,9 +186,24 @@ importers:
       '@react-three/fiber':
         specifier: ^9.0.0
         version: 9.5.0(@types/react@19.2.13)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(three@0.172.0)
+      '@remotion/three':
+        specifier: ^4.0.0
+        version: 4.0.420(@react-three/fiber@9.5.0(@types/react@19.2.13)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(three@0.172.0))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(remotion@4.0.420(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(three@0.172.0)
+      '@types/react-dom':
+        specifier: ^19.0.0
+        version: 19.2.3(@types/react@19.2.13)
+      '@types/react-test-renderer':
+        specifier: ^19.0.0
+        version: 19.1.0
       react:
         specifier: ^19.0.0
         version: 19.2.4
+      react-dom:
+        specifier: ^19.0.0
+        version: 19.2.4(react@19.2.4)
+      react-test-renderer:
+        specifier: ^19.0.0
+        version: 19.2.4(react@19.2.4)
       remotion:
         specifier: ^4.0.0
         version: 4.0.420(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
@@ -732,6 +747,15 @@ packages:
       react: '>=16.8.0'
       react-dom: '>=16.8.0'
 
+  '@remotion/three@4.0.420':
+    resolution: {integrity: sha512-y5GMX4f1XHhtGV3ndl9CNx9E7rNNW1jmTCn5rBPPtVwkhrbtAvUakiPM78GqjtNvLibdKoyXJRXn+4WkdG7Eqw==}
+    peerDependencies:
+      '@react-three/fiber': '>=8.0.0'
+      react: '>=16.8.0'
+      react-dom: '>=16.8.0'
+      remotion: 4.0.420
+      three: '>=0.137.0'
+
   '@remotion/web-renderer@4.0.420':
     resolution: {integrity: sha512-lXdT4jQA0nvEf3/Vvkp1q6QSld49RDla6Ddgr1KSArFmZkPzQPQRYdFcH3V8xm7qeYtT9vfK72k9xgvyd0YtvA==}
     peerDependencies:
@@ -945,6 +969,9 @@ packages:
     resolution: {integrity: sha512-HHM3nxyUZ3zAylX8ZEyrDNd2XZOnQ0D5XfunJF5FLQnZbHHYq4UWvW1QfelQNXv1ICNkwYhfxjwfnqivYB6bFg==}
     peerDependencies:
       '@types/react': '*'
+
+  '@types/react-test-renderer@19.1.0':
+    resolution: {integrity: sha512-XD0WZrHqjNrxA/MaR9O22w/RNidWR9YZmBdRGI7wcnWGrv/3dA8wKCJ8m63Sn+tLJhcjmuhOi629N66W6kgWzQ==}
 
   '@types/react@19.2.13':
     resolution: {integrity: sha512-KkiJeU6VbYbUOp5ITMIc7kBfqlYkKA5KhEHVrGMmUUMt7NeaZg65ojdPk+FtNrBAOXNVM5QM72jnADjM+XVRAQ==}
@@ -1753,9 +1780,17 @@ packages:
   react-is@17.0.2:
     resolution: {integrity: sha512-w2GsyukL62IJnlaff/nRegPQR94C/XXamvMWmSHRJ4y7Ts/4ocGRmTHvOs8PSE6pB3dWOrD/nueuU5sduBsQ4w==}
 
+  react-is@19.2.4:
+    resolution: {integrity: sha512-W+EWGn2v0ApPKgKKCy/7s7WHXkboGcsrXE+2joLyVxkbyVQfO3MUEaUQDHoSmb8TFFrSKYa9mw64WZHNHSDzYA==}
+
   react-refresh@0.9.0:
     resolution: {integrity: sha512-Gvzk7OZpiqKSkxsQvO/mbTN1poglhmAV7gR/DdIrRrSMXraRQQlfikRJOr3Nb9GTMPC5kof948Zy6jJZIFtDvQ==}
     engines: {node: '>=0.10.0'}
+
+  react-test-renderer@19.2.4:
+    resolution: {integrity: sha512-Ttl5D7Rnmi6JGMUpri4UjB4BAN0FPs4yRDnu2XSsigCWOLm11o8GwRlVsh27ER+4WFqsGtrBuuv5zumUaRCmKw==}
+    peerDependencies:
+      react: ^19.2.4
 
   react-use-measure@2.1.7:
     resolution: {integrity: sha512-KrvcAo13I/60HpwGO5jpW7E9DfusKyLPLvuHlUyP5zqnmAPhNc6qTRjUQrdTADl0lpPpDVU2/Gg51UlOGHXbdg==}
@@ -2678,6 +2713,14 @@ snapshots:
       - supports-color
       - utf-8-validate
 
+  '@remotion/three@4.0.420(@react-three/fiber@9.5.0(@types/react@19.2.13)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(three@0.172.0))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(remotion@4.0.420(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(three@0.172.0)':
+    dependencies:
+      '@react-three/fiber': 9.5.0(@types/react@19.2.13)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(three@0.172.0)
+      react: 19.2.4
+      react-dom: 19.2.4(react@19.2.4)
+      remotion: 4.0.420(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      three: 0.172.0
+
   '@remotion/web-renderer@4.0.420(react-dom@19.2.4(react@19.2.4))(react@19.2.4)':
     dependencies:
       '@remotion/licensing': 4.0.420
@@ -2836,6 +2879,10 @@ snapshots:
       '@types/react': 19.2.13
 
   '@types/react-reconciler@0.28.9(@types/react@19.2.13)':
+    dependencies:
+      '@types/react': 19.2.13
+
+  '@types/react-test-renderer@19.1.0':
     dependencies:
       '@types/react': 19.2.13
 
@@ -3697,7 +3744,15 @@ snapshots:
 
   react-is@17.0.2: {}
 
+  react-is@19.2.4: {}
+
   react-refresh@0.9.0: {}
+
+  react-test-renderer@19.2.4(react@19.2.4):
+    dependencies:
+      react: 19.2.4
+      react-is: 19.2.4
+      scheduler: 0.27.0
 
   react-use-measure@2.1.7(react-dom@19.2.4(react@19.2.4))(react@19.2.4):
     dependencies:
