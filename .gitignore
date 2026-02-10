@@ -30,5 +30,8 @@ Thumbs.db
 *.log
 npm-debug.log*
 
+# Turbo
+.turbo/
+
 # Temp
 tmp/

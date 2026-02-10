@@ -1,0 +1,32 @@
+{
+  "name": "remotion-reloaded-monorepo",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Remotion Reloaded — GSAP, effects, and Three.js for Remotion",
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "test": "turbo run test",
+    "test:unit": "turbo run test:unit",
+    "lint": "turbo run lint",
+    "typecheck": "turbo run typecheck",
+    "clean": "turbo run clean && rm -rf node_modules"
+  },
+  "devDependencies": {
+    "@types/node": "^25.2.2",
+    "@types/react": "^19.2.13",
+    "tsup": "^8.0.0",
+    "turbo": "^2.4.0",
+    "typescript": "^5.7.0",
+    "vitest": "^3.0.0"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild"
+    ]
+  },
+  "packageManager": "pnpm@10.29.2",
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
