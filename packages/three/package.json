@@ -1,7 +1,24 @@
 {
   "name": "@remotion-reloaded/three",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "WebGPU/Three.js integration for Remotion",
+  "license": "MIT",
+  "homepage": "https://github.com/rawhalo/remotion-reloaded#readme",
+  "bugs": {
+    "url": "https://github.com/rawhalo/remotion-reloaded/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rawhalo/remotion-reloaded.git",
+    "directory": "packages/three"
+  },
+  "keywords": [
+    "remotion",
+    "threejs",
+    "webgl",
+    "webgpu",
+    "video"
+  ],
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
@@ -56,5 +73,7 @@
     "typescript": "^5.7.0",
     "vitest": "^3.0.0"
   },
-  "license": "MIT"
+  "publishConfig": {
+    "access": "public"
+  }
 }

@@ -1,7 +1,25 @@
 {
   "name": "remotion-reloaded",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Enhancement layer for Remotion — GSAP, effects, and Three.js integration",
+  "license": "MIT",
+  "homepage": "https://github.com/rawhalo/remotion-reloaded#readme",
+  "bugs": {
+    "url": "https://github.com/rawhalo/remotion-reloaded/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rawhalo/remotion-reloaded.git",
+    "directory": "packages/remotion-reloaded"
+  },
+  "keywords": [
+    "remotion",
+    "video",
+    "animation",
+    "gsap",
+    "threejs",
+    "effects"
+  ],
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
@@ -31,7 +49,10 @@
       }
     }
   },
-  "files": ["dist", "bin"],
+  "files": [
+    "dist",
+    "bin"
+  ],
   "scripts": {
     "build": "tsup",
     "typecheck": "tsc --noEmit",
@@ -58,5 +79,7 @@
     "typescript": "^5.7.0",
     "vitest": "^3.0.0"
   },
-  "license": "MIT"
+  "publishConfig": {
+    "access": "public"
+  }
 }

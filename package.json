@@ -3,6 +3,15 @@
   "version": "0.0.0",
   "private": true,
   "description": "Remotion Reloaded — GSAP, effects, and Three.js for Remotion",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rawhalo/remotion-reloaded.git"
+  },
+  "bugs": {
+    "url": "https://github.com/rawhalo/remotion-reloaded/issues"
+  },
+  "homepage": "https://github.com/rawhalo/remotion-reloaded#readme",
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev",
@@ -14,9 +23,15 @@
     "test:performance": "vitest run tests/performance --config tests/vitest.config.ts",
     "lint": "turbo run lint",
     "typecheck": "turbo run typecheck",
-    "clean": "turbo run clean && rm -rf node_modules"
+    "clean": "turbo run clean && rm -rf node_modules",
+    "changeset": "changeset",
+    "release:check": "pnpm typecheck && pnpm build && pnpm test",
+    "release:check:full": "pnpm release:check && pnpm test:integration",
+    "release:version": "changeset version",
+    "release:publish": "changeset publish"
   },
   "devDependencies": {
+    "@changesets/cli": "^2.29.8",
     "@remotion/bundler": "^4.0.0",
     "@remotion/renderer": "^4.0.0",
     "@types/node": "^25.2.2",

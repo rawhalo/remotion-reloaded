@@ -1,0 +1,25 @@
+{
+  "$schema": "https://unpkg.com/@changesets/config@3.0.0/schema.json",
+  "changelog": [
+    "@changesets/cli/changelog",
+    {
+      "repo": "rawhalo/remotion-reloaded"
+    }
+  ],
+  "commit": false,
+  "fixed": [
+    [
+      "@remotion-reloaded/config",
+      "@remotion-reloaded/effects",
+      "@remotion-reloaded/gsap",
+      "@remotion-reloaded/three",
+      "create-remotion-reloaded",
+      "remotion-reloaded"
+    ]
+  ],
+  "linked": [],
+  "access": "public",
+  "baseBranch": "main",
+  "updateInternalDependencies": "patch",
+  "ignore": []
+}

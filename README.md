@@ -220,15 +220,35 @@ export const MyVideo = () => {
 | [skills/SKILL.md](./skills/SKILL.md) | Canonical AI agent skill definition |
 | [SKILL.md](./SKILL.md) | Compatibility shim for legacy tooling |
 | [Phase 1](./PHASE-1-TECHNICAL-FOUNDATION.md) | GSAP, WebGPU, effects system |
+| [Phase 1 Release Checklist](./docs/PHASE-1-RELEASE-CHECKLIST.md) | First npm release and smoke test steps |
 | [Phase 2](./PHASE-2-CINEMATOGRAPHY.md) | Camera, motion, transitions |
 | [Phase 3](./PHASE-3-INTELLIGENCE.md) | Style, audio, layout, narrative |
 | [Phase 4](./PHASE-4-PRODUCTION.md) | Variants, assets, data, analysis |
 
 ---
 
+## Phase 1 Release
+
+1. Add an `NPM_TOKEN` repository secret in GitHub (token must have publish rights).
+2. Push this `1.0.0` versioned commit to `main`.
+3. The `Release` workflow will publish all packages to npm.
+4. For future releases, add a new `.changeset/*.md` file; the workflow will open a version PR automatically.
+
+For a manual local release:
+
+```bash
+pnpm release:check
+pnpm release:check:full   # optional, runs integration renders
+pnpm release:version      # skip if versions/changelogs are already updated
+pnpm install --lockfile-only
+pnpm release:publish
+```
+
+---
+
 ## License
 
-TBD
+MIT
 
 ---
 

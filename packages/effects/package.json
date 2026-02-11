@@ -1,7 +1,24 @@
 {
   "name": "@remotion-reloaded/effects",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "GPU-accelerated shader effects for Remotion",
+  "license": "MIT",
+  "homepage": "https://github.com/rawhalo/remotion-reloaded#readme",
+  "bugs": {
+    "url": "https://github.com/rawhalo/remotion-reloaded/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rawhalo/remotion-reloaded.git",
+    "directory": "packages/effects"
+  },
+  "keywords": [
+    "remotion",
+    "effects",
+    "shader",
+    "webgl",
+    "video"
+  ],
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
@@ -18,7 +35,9 @@
       }
     }
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsup",
     "typecheck": "tsc --noEmit",
@@ -41,5 +60,7 @@
     "typescript": "^5.7.0",
     "vitest": "^3.0.0"
   },
-  "license": "MIT"
+  "publishConfig": {
+    "access": "public"
+  }
 }

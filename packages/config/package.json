@@ -1,7 +1,22 @@
 {
   "name": "@remotion-reloaded/config",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Configuration helpers for Remotion Reloaded",
+  "license": "MIT",
+  "homepage": "https://github.com/rawhalo/remotion-reloaded#readme",
+  "bugs": {
+    "url": "https://github.com/rawhalo/remotion-reloaded/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rawhalo/remotion-reloaded.git",
+    "directory": "packages/config"
+  },
+  "keywords": [
+    "remotion",
+    "video",
+    "configuration"
+  ],
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
@@ -18,7 +33,9 @@
       }
     }
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "sideEffects": false,
   "scripts": {
     "build": "tsup",
@@ -41,5 +58,7 @@
     "vitest": "^3.0.0",
     "typescript": "^5.7.0"
   },
-  "license": "MIT"
+  "publishConfig": {
+    "access": "public"
+  }
 }
