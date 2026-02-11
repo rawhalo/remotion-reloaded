@@ -24,6 +24,13 @@ Thumbs.db
 .env
 .env.local
 .env.*.local
+.npmrc
+
+# Local agent/workbench context
+.context/
+.claude/
+.vybehance/
+.mcp.json
 
 # IDE
 .vscode/
