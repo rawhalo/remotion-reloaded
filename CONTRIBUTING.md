@@ -4,7 +4,7 @@ Thanks for contributing to Remotion Reloaded.
 
 ## Project Scope
 
-This repository is currently a docs-first monorepo with publishable packages under `packages/`.
+This repository is a monorepo with publishable packages under `packages/` and product/spec documentation at the root.
 
 Please:
 - Keep changes focused and small.
