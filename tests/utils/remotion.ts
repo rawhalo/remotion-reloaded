@@ -1,6 +1,7 @@
 import { bundle } from "@remotion/bundler";
 import { getCompositions, renderStill } from "@remotion/renderer";
 import type { ChromiumOptions } from "@remotion/renderer";
+import { resolve } from "node:path";
 import { performance } from "node:perf_hooks";
 import { fileURLToPath } from "node:url";
 import type { VideoConfig } from "remotion/no-react";
@@ -30,6 +31,18 @@ export interface RenderBenchmark {
 }
 
 const entryPoint = fileURLToPath(new URL("../fixtures/index.tsx", import.meta.url));
+const workspaceRoot = fileURLToPath(new URL("../../", import.meta.url));
+const workspaceAlias = {
+  "@remotion-reloaded/config": resolve(workspaceRoot, "packages/config/src/index.ts"),
+  "@remotion-reloaded/effects": resolve(workspaceRoot, "packages/effects/src/index.ts"),
+  "@remotion-reloaded/gsap": resolve(workspaceRoot, "packages/gsap/src/index.ts"),
+  "@remotion-reloaded/three": resolve(workspaceRoot, "packages/three/src/index.ts"),
+  "remotion-reloaded": resolve(workspaceRoot, "packages/remotion-reloaded/src/index.ts"),
+  "remotion-reloaded/config": resolve(
+    workspaceRoot,
+    "packages/remotion-reloaded/src/config.ts",
+  ),
+};
 
 let serveUrlPromise: Promise<string> | null = null;
 
@@ -37,6 +50,11 @@ type WebpackConfig = {
   module?: {
     rules?: unknown[];
   };
+  resolve?: {
+    alias?: Record<string, string>;
+    [key: string]: unknown;
+  };
+  [key: string]: unknown;
 };
 
 function applyShaderRawImportRule(webpackConfig: WebpackConfig): WebpackConfig {
@@ -57,12 +75,26 @@ function applyShaderRawImportRule(webpackConfig: WebpackConfig): WebpackConfig {
   };
 }
 
+function applyWorkspaceAliases(webpackConfig: WebpackConfig): WebpackConfig {
+  return {
+    ...webpackConfig,
+    resolve: {
+      ...(webpackConfig.resolve ?? {}),
+      alias: {
+        ...(webpackConfig.resolve?.alias ?? {}),
+        ...workspaceAlias,
+      },
+    },
+  };
+}
+
 function getServeUrl(): Promise<string> {
   if (!serveUrlPromise) {
     serveUrlPromise = bundle({
       entryPoint,
       onProgress: () => undefined,
-      webpackOverride: (webpackConfig) => applyShaderRawImportRule(webpackConfig),
+      webpackOverride: (webpackConfig) =>
+        applyWorkspaceAliases(applyShaderRawImportRule(webpackConfig)),
     });
   }
 
