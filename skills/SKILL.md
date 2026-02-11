@@ -1,3 +1,10 @@
+---
+name: remotion-reloaded
+description: Practical guidance for Remotion Reloaded (GSAP sync, effects, and Three.js integration for Remotion projects).
+metadata:
+  tags: remotion, video, react, animation, gsap, threejs, effects
+---
+
 # Remotion Reloaded Skill
 
 Practical guidance for the currently implemented Remotion Reloaded API (Phase 1a + 1b).

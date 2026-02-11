@@ -164,7 +164,7 @@ npm run preview
 # Install packages
 npm install remotion-reloaded
 
-# Auto-configure (patches remotion.config.ts, adds skills)
+# Auto-configure (patches remotion.config.ts, adds project guidance files)
 npx remotion-reloaded init
 
 # Verify setup
@@ -176,8 +176,8 @@ npx remotion-reloaded doctor
 The project includes skill files that teach AI assistants (Claude Code, Cursor, etc.) how to use Remotion Reloaded:
 
 ```bash
-# Skills are installed automatically, or add manually:
-npx skills add remotion-reloaded/skills
+# Install the Remotion Reloaded skill from this repo:
+npx skills add rawhalo/remotion-reloaded --skill remotion-reloaded
 ```
 
 Then just describe what you want:

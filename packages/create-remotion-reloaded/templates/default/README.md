@@ -14,6 +14,12 @@ npm run preview
 - `LogoReveal`: GSAP timeline sync example
 - `ParticleDemo`: Three.js particles + postprocessing
 
+## AI skill (optional)
+
+```bash
+npx skills add rawhalo/remotion-reloaded --skill remotion-reloaded
+```
+
 ## Render a sample video
 
 ```bash
