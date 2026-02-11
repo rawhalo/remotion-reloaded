@@ -48,6 +48,9 @@ npm run render
 
 ## 6. GitHub Actions Automation (Optional)
 
-To publish via CI, set repository secret `NPM_TOKEN` and push to `main`.
+To publish via CI:
+- Add `NPM_TOKEN` as an environment secret in your release environment.
+- If your environment is not named `release`, set repository variable `RELEASE_ENVIRONMENT` to that name.
+- Push to `main`.
 - If package versions are already bumped, the workflow publishes directly.
 - If you only added `.changeset/*`, the workflow opens a version PR first, then publishes after merge.

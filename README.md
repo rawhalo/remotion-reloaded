@@ -229,10 +229,11 @@ export const MyVideo = () => {
 
 ## Phase 1 Release
 
-1. Add an `NPM_TOKEN` repository secret in GitHub (token must have publish rights).
-2. Push this `1.0.0` versioned commit to `main`.
-3. The `Release` workflow will publish all packages to npm.
-4. For future releases, add a new `.changeset/*.md` file; the workflow will open a version PR automatically.
+1. Add an `NPM_TOKEN` secret in your GitHub release environment.
+2. Set repository variable `RELEASE_ENVIRONMENT` to that environment name (optional if your environment is named `release`).
+3. Push this `1.0.0` versioned commit to `main`.
+4. The `Release` workflow will publish all packages to npm.
+5. For future releases, add a new `.changeset/*.md` file; the workflow will open a version PR automatically.
 
 For a manual local release:
 
