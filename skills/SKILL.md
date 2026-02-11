@@ -2,6 +2,8 @@
 
 Practical guidance for the currently implemented Remotion Reloaded API (Phase 1a + 1b).
 
+This is the canonical skill entry point for this repository. Root `SKILL.md` is a compatibility shim.
+
 ## Current Scope
 
 This skill covers:

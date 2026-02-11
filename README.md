@@ -17,7 +17,7 @@ remotion-reloaded/
 ├── README.md                          # This file
 ├── CLAUDE.md                          # AI assistant guidance
 ├── PRD.md                             # Product Requirements Document (overview)
-├── SKILL.md                           # AI Agent Skill Definition (legacy)
+├── SKILL.md                           # Compatibility entry (points to skills/SKILL.md)
 │
 ├── PHASE-1-TECHNICAL-FOUNDATION.md    # GSAP, WebGPU, Effects, DX
 ├── PHASE-2-CINEMATOGRAPHY.md          # Camera, Motion, Transitions, Time
@@ -27,7 +27,7 @@ remotion-reloaded/
 ├── PLAN_ASSESSMENT_AND_IDEAS.md       # External review and expansion proposals
 ├── FUTURE-IDEAS.md                    # Out-of-scope ideas for future consideration
 │
-├── skills/                            # AI Agent Skills (Remotion Skills format)
+├── skills/                            # Canonical AI Agent Skills directory
 │   ├── SKILL.md                       # Main skill entry point
 │   └── rules/                         # Individual rule files
 │       ├── animation-selection.md
@@ -43,7 +43,7 @@ remotion-reloaded/
 ## Phased Roadmap
 
 ### Phase 1: Technical Foundation ← *Current Priority*
-**Timeline:** 4-6 weeks  
+**Timeline:** 6-8 weeks  
 **Document:** [PHASE-1-TECHNICAL-FOUNDATION.md](./PHASE-1-TECHNICAL-FOUNDATION.md)
 
 | Component | Description | Status |
@@ -61,7 +61,7 @@ remotion-reloaded/
 ---
 
 ### Phase 2: Cinematography & Motion
-**Timeline:** 4-6 weeks | **Depends on:** Phase 1  
+**Timeline:** 6-8 weeks | **Depends on:** Phase 1  
 **Document:** [PHASE-2-CINEMATOGRAPHY.md](./PHASE-2-CINEMATOGRAPHY.md)
 
 | Component | Description |
@@ -191,16 +191,13 @@ Then just describe what you want:
 import { useGSAP } from '@remotion-reloaded/gsap';
 import { Effect } from '@remotion-reloaded/effects';
 import { AbsoluteFill } from 'remotion';
-import { useEffect } from 'react';
 
 export const MyVideo = () => {
-  const { timeline, scopeRef } = useGSAP();
-
-  useEffect(() => {
+  const { scopeRef } = useGSAP((timeline) => {
     timeline
       .from('.title', { y: 100, opacity: 0, ease: 'power3.out' })
       .from('.subtitle', { opacity: 0, stagger: 0.1 }, '-=0.5');
-  }, []);
+  });
 
   return (
     <AbsoluteFill ref={scopeRef}>
@@ -220,7 +217,8 @@ export const MyVideo = () => {
 | Document | Description |
 |----------|-------------|
 | [PRD.md](./PRD.md) | Product requirements overview |
-| [SKILL.md](./SKILL.md) | AI agent skill definition |
+| [skills/SKILL.md](./skills/SKILL.md) | Canonical AI agent skill definition |
+| [SKILL.md](./SKILL.md) | Compatibility shim for legacy tooling |
 | [Phase 1](./PHASE-1-TECHNICAL-FOUNDATION.md) | GSAP, WebGPU, effects system |
 | [Phase 2](./PHASE-2-CINEMATOGRAPHY.md) | Camera, motion, transitions |
 | [Phase 3](./PHASE-3-INTELLIGENCE.md) | Style, audio, layout, narrative |

@@ -70,7 +70,7 @@ Remotion Reloaded is an enhancement layer and skill system built on top of Remot
 │  • WebGPU/Three.js Enhancement                                          │
 │  • Shader Effect System                                                 │
 │  • Enhanced Remotion Skill                                              │
-│  Timeline: 4-6 weeks                                                    │
+│  Timeline: 6-8 weeks                                                    │
 └─────────────────────────────────────────────────────────────────────────┘
                                     │
                                     ▼
@@ -81,7 +81,7 @@ Remotion Reloaded is an enhancement layer and skill system built on top of Remot
 │  • Procedural Motion Library (float, breathe, drift, flocking)          │
 │  • Transition Intelligence (match cuts, J-cuts, morphs)                 │
 │  • Temporal Dynamics (speed ramps, freeze frames)                       │
-│  Timeline: 4-6 weeks                                                    │
+│  Timeline: 6-8 weeks                                                    │
 └─────────────────────────────────────────────────────────────────────────┘
                                     │
                                     ▼
@@ -127,12 +127,12 @@ Remotion Reloaded is an enhancement layer and skill system built on top of Remot
 
 ```tsx
 // Hook-based integration
+import React from 'react';
 import { useGSAP } from '@remotion-reloaded/gsap';
+import { AbsoluteFill } from 'remotion';
 
 export const MyComposition: React.FC = () => {
-  const { timeline, scopeRef } = useGSAP();
-  
-  useEffect(() => {
+  const { scopeRef } = useGSAP((timeline) => {
     timeline
       .from('.title', { 
         y: 100, 
@@ -152,7 +152,7 @@ export const MyComposition: React.FC = () => {
         yoyo: true,
         repeat: 1
       });
-  }, []);
+  });
   
   return (
     <AbsoluteFill ref={scopeRef}>
@@ -166,7 +166,9 @@ export const MyComposition: React.FC = () => {
 
 ```tsx
 // Component-based integration
+import React from 'react';
 import { GSAPTimeline, GSAPFrom, GSAPTo } from '@remotion-reloaded/gsap';
+import { AbsoluteFill } from 'remotion';
 
 export const MyComposition: React.FC = () => (
   <GSAPTimeline>
@@ -226,8 +228,9 @@ export const MyComposition: React.FC = () => (
 #### Core API Design
 
 ```tsx
-import { ThreeCanvas, useVideoTexture } from '@remotion-reloaded/three';
-import { WebGPURenderer } from 'three/webgpu';
+import React from 'react';
+import { Environment } from '@react-three/drei';
+import { Bloom, DepthOfField, ThreeCanvas } from '@remotion-reloaded/three';
 
 export const ProductShowcase: React.FC = () => {
   return (
@@ -235,6 +238,7 @@ export const ProductShowcase: React.FC = () => {
       renderer="webgpu"  // or "webgl" for fallback
       gl={{ antialias: true }}
     >
+      {/* ProductModel and useRotation are app-specific helpers */}
       <Environment preset="studio" />
       <ProductModel 
         url="/models/iphone.glb"
@@ -275,7 +279,13 @@ import { GPUParticles } from '@remotion-reloaded/three';
 #### Shader Effects (Post-Processing)
 
 ```tsx
-import { EffectComposer, ChromaticAberration, Bloom, Noise } from '@remotion-reloaded/three/effects';
+import {
+  Bloom,
+  ChromaticAberration,
+  EffectComposer,
+  Noise,
+  Vignette,
+} from '@remotion-reloaded/three';
 
 <EffectComposer>
   <ChromaticAberration offset={[0.002, 0.002]} />
@@ -353,6 +363,7 @@ Config.overrideWebpackConfig((config) => {
 
 ```tsx
 import { Effect, EffectStack } from '@remotion-reloaded/effects';
+import { interpolate, useCurrentFrame } from 'remotion';
 
 // Single effect
 <Effect type="vhs" intensity={0.7}>
@@ -378,6 +389,8 @@ const frame = useCurrentFrame();
 #### Preset Combinations
 
 ```tsx
+import { EffectPreset } from '@remotion-reloaded/effects';
+
 // Pre-built aesthetic presets
 <EffectPreset name="cinematic">  // Letterbox, film grain, subtle color grade
 <EffectPreset name="retro-vhs">  // VHS, scan lines, chromatic aberration
@@ -395,25 +408,21 @@ const frame = useCurrentFrame();
 #### Skill Structure
 
 ```
-remotion-reloaded-skill/
-├── SKILL.md                    # Main skill definition
-├── rules/
-│   ├── gsap.md                 # GSAP integration patterns
-│   ├── three-webgpu.md         # 3D and WebGPU patterns
-│   ├── effects.md              # Shader effect usage
-│   ├── performance.md          # Optimization guidelines
-│   └── common-patterns.md      # Frequently needed compositions
-├── examples/
-│   ├── text-animations/
-│   ├── logo-reveals/
-│   ├── data-visualizations/
-│   ├── product-showcases/
-│   ├── music-visualizers/
-│   └── social-media-templates/
-└── schemas/
-    ├── composition.schema.json
-    ├── effects.schema.json
-    └── gsap-timeline.schema.json
+remotion-reloaded/
+└── skills/
+    ├── SKILL.md                    # Canonical entry point
+    ├── rules/
+    │   ├── animation-selection.md
+    │   ├── gsap-basics.md
+    │   ├── effects-basics.md
+    │   ├── three-basics.md
+    │   └── ...
+    └── examples/
+        ├── logo-reveal.tsx
+        ├── kinetic-text.tsx
+        ├── product-showcase.tsx
+        ├── particle-background.tsx
+        └── data-counter.tsx
 ```
 
 #### Key Skill Directives
@@ -494,10 +503,10 @@ When creating animations, choose the appropriate tool:
 
 ### Appendix C: Related Documents
 
-- [Phase 2 Spec: Cinematography & Motion](./docs/phase-2-cinematography.md)
-- [Phase 3 Spec: Intelligence Layer](./docs/phase-3-intelligence.md)
-- [Phase 4 Spec: Production Scale](./docs/phase-4-production.md)
-- [Remotion Reloaded Skill Definition](./skill/SKILL.md)
+- [Phase 2 Spec: Cinematography & Motion](./PHASE-2-CINEMATOGRAPHY.md)
+- [Phase 3 Spec: Intelligence Layer](./PHASE-3-INTELLIGENCE.md)
+- [Phase 4 Spec: Production Scale](./PHASE-4-PRODUCTION.md)
+- [Remotion Reloaded Skill Definition](./skills/SKILL.md)
 
 ---
 

@@ -6,7 +6,7 @@
 **Timeline:** 6-8 weeks
 **Updated:** January 30, 2026
 
-> **Note:** Timeline extended from 4-6 weeks to 6-8 weeks to account for comprehensive error handling, serverless support, and testing infrastructure.
+> **Note:** Timeline is 6-8 weeks to account for comprehensive error handling, serverless support, and testing infrastructure.
 
 ---
 
@@ -185,7 +185,7 @@ This project uses Remotion Reloaded for enhanced video creation.
 ## Available Skills
 
 Run `npx skills list` to see installed skills.
-Refer to `node_modules/remotion-reloaded/skills/` for patterns.
+Refer to `skills/` for patterns in this repository.
 
 ## Quick Examples
 
@@ -198,10 +198,9 @@ Logo with glow:
 
 GSAP timeline:
 \`\`\`tsx
-const { timeline, scopeRef } = useGSAP();
-useEffect(() => {
+const { scopeRef } = useGSAP((timeline) => {
   timeline.from('.title', { y: 100, opacity: 0, ease: 'power3.out' });
-}, []);
+});
 \`\`\`
 ```
 
@@ -335,16 +334,12 @@ Remotion renders videos frame-by-frame. GSAP typically runs in real-time with re
 #### Hook-Based Integration
 
 ```tsx
+import React from 'react';
 import { useGSAP } from '@remotion-reloaded/gsap';
-import { AbsoluteFill, useCurrentFrame, useVideoConfig } from 'remotion';
+import { AbsoluteFill } from 'remotion';
 
 export const MyComposition: React.FC = () => {
-  const { timeline, scopeRef } = useGSAP();
-  const frame = useCurrentFrame();
-  const { fps } = useVideoConfig();
-
-  useEffect(() => {
-    // Build timeline once on mount
+  const { scopeRef } = useGSAP((timeline) => {
     timeline
       .from('.title', { 
         y: 100, 
@@ -364,7 +359,7 @@ export const MyComposition: React.FC = () => {
         yoyo: true,
         repeat: 1
       });
-  }, []);
+  });
 
   // Timeline automatically seeks to current frame position
 
@@ -381,7 +376,9 @@ export const MyComposition: React.FC = () => {
 #### Component-Based Integration
 
 ```tsx
+import React from 'react';
 import { GSAPTimeline, GSAPFrom, GSAPTo } from '@remotion-reloaded/gsap';
+import { AbsoluteFill } from 'remotion';
 
 export const MyComposition: React.FC = () => (
   <GSAPTimeline>
@@ -410,11 +407,11 @@ export const MyComposition: React.FC = () => (
 | Plugin | Priority | Use Case | License |
 |--------|----------|----------|---------|
 | **Core GSAP** | P0 | All animations | Free |
-| **MorphSVG** | P0 | Logo morphing, shape transitions | Club |
-| **DrawSVG** | P0 | Line drawing effects | Club |
-| **SplitText** | P1 | Character/word-level text animation | Club |
-| **MotionPath** | P1 | Animations along bezier curves | Club |
-| **Physics2D** | P2 | Physics-based motion | Club |
+| **MorphSVG** | P0 | Logo morphing, shape transitions | Free |
+| **DrawSVG** | P0 | Line drawing effects | Free |
+| **SplitText** | P1 | Character/word-level text animation | Free |
+| **MotionPath** | P1 | Animations along bezier curves | Free |
+| **Physics2D** | P2 | Physics-based motion | Free |
 | **ScrollTrigger** | P2 | Scroll-driven animations | Free |
 
 ### Implementation Architecture
@@ -444,6 +441,10 @@ export const MyComposition: React.FC = () => (
 
 ```tsx
 // Simplified implementation concept
+import { useCurrentFrame, useVideoConfig } from 'remotion';
+import { useEffect, useRef } from 'react';
+import gsap from 'gsap';
+
 export function useGSAP() {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
@@ -531,6 +532,8 @@ timeline.to('#shape', {
 #### Text Character Animation
 
 ```tsx
+import { useEffect } from 'react';
+import gsap from 'gsap';
 import { SplitText } from 'gsap/SplitText';
 gsap.registerPlugin(SplitText);
 
@@ -696,7 +699,7 @@ import {
   ChromaticAberration,
   Vignette,
   Noise
-} from '@remotion-reloaded/three/effects';
+} from '@remotion-reloaded/three';
 
 <ThreeCanvas>
   <Scene />
@@ -1181,13 +1184,15 @@ Need to animate something?
 
 ```
 remotion-reloaded/
-├── SKILL.md                    # Main skill definition
-└── skill-examples/             # Example compositions
-    ├── logo-reveal.tsx
-    ├── text-animation.tsx
-    ├── product-showcase.tsx
-    ├── particle-effects.tsx
-    └── data-visualization.tsx
+└── skills/
+    ├── SKILL.md                # Main skill definition
+    ├── rules/                  # Rule files
+    └── examples/               # Example compositions
+        ├── logo-reveal.tsx
+        ├── kinetic-text.tsx
+        ├── product-showcase.tsx
+        ├── particle-background.tsx
+        └── data-counter.tsx
 ```
 
 ---
@@ -1250,7 +1255,7 @@ remotion-reloaded/
 - [ ] `remotion-reloaded doctor` diagnostics
 
 **Skills Package:**
-- [ ] SKILL.md main file
+- [ ] skills/SKILL.md main file
 - [ ] 15+ rule files covering all features
 - [ ] 5+ example compositions
 - [ ] Works with `npx skills add`
