@@ -59,6 +59,7 @@ Skill docs:
 
 ## Documentation
 
+- [Installation Guide](./docs/INSTALLATION.md)
 - [Product Requirements](./PRD.md)
 - [Phase 1 Spec](./PHASE-1-TECHNICAL-FOUNDATION.md)
 - [Release Checklist](./docs/PHASE-1-RELEASE-CHECKLIST.md)
