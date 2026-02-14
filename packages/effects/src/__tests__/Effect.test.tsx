@@ -56,6 +56,50 @@ describe("Effect", () => {
     expect(second).toContain("blur(24.00px)");
     expect(first).not.toEqual(second);
   });
+
+  it("uses full-size wrapper defaults for standalone overlay effects", () => {
+    const html = renderToStaticMarkup(
+      <Effect type="vignette" darkness={0.4}>
+        <div
+          style={{
+            position: "absolute",
+            top: "50%",
+            transform: "translateY(-50%)",
+          }}
+        >
+          Centered
+        </div>
+      </Effect>,
+    );
+
+    expect(html).toContain('data-effect-type="vignette"');
+    expect(html).toContain("width:100%");
+    expect(html).toContain("height:100%");
+    expect(html).toContain("Centered");
+  });
+
+  it("does not force full-size wrapper for non-overlay effects", () => {
+    const html = renderToStaticMarkup(
+      <Effect type="blur" radius={4}>
+        <span>Inline</span>
+      </Effect>,
+    );
+
+    expect(html).not.toContain("width:100%");
+    expect(html).not.toContain("height:100%");
+  });
+
+  it("does not force full-size wrapper for overlay effects with in-flow children", () => {
+    const html = renderToStaticMarkup(
+      <Effect type="film" grain={0.14} seed={33} sepia={0.2} vignette={0.35}>
+        <div style={{ height: 140, width: 140 }}>Inline</div>
+      </Effect>,
+    );
+
+    expect(html).toContain('data-effect-type="film"');
+    expect(html).not.toContain("width:100%");
+    expect(html).not.toContain("height:100%");
+  });
 });
 
 describe("EffectStack", () => {
@@ -75,5 +119,30 @@ describe("EffectStack", () => {
     expect(sepiaIndex).toBeGreaterThanOrEqual(0);
     expect(blurIndex).toBeLessThan(sepiaIndex);
     expect(html).toContain("<span>Layered</span>");
+  });
+
+  it("ensures stack layers are full-size to preserve absolute positioning", () => {
+    const html = renderToStaticMarkup(
+      <EffectStack>
+        <Effect type="vignette" darkness={0.4} />
+        <Effect type="film" grain={0.1} />
+        <div
+          style={{
+            position: "absolute",
+            top: "50%",
+            transform: "translateY(-50%)",
+          }}
+        >
+          Centered
+        </div>
+      </EffectStack>,
+    );
+
+    const widthMatches = html.match(/width:100%/g) ?? [];
+    const heightMatches = html.match(/height:100%/g) ?? [];
+
+    expect(widthMatches.length).toBeGreaterThanOrEqual(2);
+    expect(heightMatches.length).toBeGreaterThanOrEqual(2);
+    expect(html).toContain("Centered");
   });
 });

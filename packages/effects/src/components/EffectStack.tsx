@@ -2,6 +2,18 @@ import { Children, Fragment, isValidElement, type ReactElement } from "react";
 import { Effect, isEffectElement } from "./Effect";
 import type { EffectProps, EffectStackProps } from "../types";
 
+function withStackLayerSizing(props: EffectProps): EffectProps {
+  return {
+    ...props,
+    // Effect layers in a stack should not collapse when wrapped content is absolutely positioned.
+    style: {
+      height: "100%",
+      width: "100%",
+      ...(props.style ?? {}),
+    },
+  };
+}
+
 /**
  * Composes multiple effects in order (top-to-bottom declaration order).
  */
@@ -35,7 +47,10 @@ export function EffectStack({ children }: EffectStackProps): ReactElement | null
   return effectDescriptors.reduce((accumulator, effectDescriptor, index) => {
     const { children: _ignoredChildren, ...effectProps } = effectDescriptor.props;
     return (
-      <Effect key={`effect-stack-layer-${index}`} {...effectProps}>
+      <Effect
+        key={`effect-stack-layer-${index}`}
+        {...withStackLayerSizing(effectProps)}
+      >
         {accumulator}
       </Effect>
     );
