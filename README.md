@@ -24,6 +24,8 @@ Current stable scope is **Phase 1 (Technical Foundation)**:
 - Existing-project CLI workflow:
   - `npx remotion-reloaded init`
   - `npx remotion-reloaded doctor`
+  - `npx remotion-reloaded render --composition-id <id>`
+  - `npx remotion-reloaded precomp --source-composition-id <source-id> --effects-composition-id <effects-id>`
 
 ## Quick Start
 
@@ -64,6 +66,32 @@ Install guide with full end-to-end setup (Remotion + skills + agent loop):
 2. Prompt your coding agent for targeted composition changes.
 3. Validate visually in Studio and iterate.
 4. Re-run `npx remotion-reloaded doctor` when setup drifts.
+
+## Render Safety Commands
+
+Use classifier-driven routing for risky Three + WebGL effect stacks:
+
+```bash
+# Enforced render policy (single-pass-safe vs requires-precomp)
+npx remotion-reloaded render --composition-id MyComposition
+
+# Dry-run and resolve composition geometry into cache metadata
+npx remotion-reloaded render --composition-id MyComposition --dry-run --resolve-composition-metadata
+
+# Explicit pre-comp run (pass 1 source, pass 2 effects composition)
+npx remotion-reloaded precomp --source-composition-id SourceComp --effects-composition-id EffectsComp
+
+# Dry-run pre-comp with resolved composition geometry
+npx remotion-reloaded precomp --source-composition-id SourceComp --effects-composition-id EffectsComp --dry-run --resolve-composition-metadata
+
+# Clean stale pass-1 cache artifacts
+npx remotion-reloaded precomp clean --retention-days 7
+```
+
+Operational notes:
+- `render` is the enforcement point (safe combos stay single-pass, risky combos auto-route to pre-comp).
+- `doctor` is advisory/preflight and uses the same classifier taxonomy as runtime.
+- `--allow-unsafe-single-pass` exists for expert override flows and should be paired with timeout guardrails.
 
 ## Packages
 

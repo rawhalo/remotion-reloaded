@@ -33,7 +33,7 @@ Thumbs.db
 .mcp.json
 AGENTS.md
 CLAUDE.md
-
+.testing/
 # IDE
 .vscode/
 .idea/

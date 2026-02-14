@@ -50,6 +50,23 @@ Fixes:
 - Prefer CSS/SVG effects or presets for Lambda-critical shots.
 - Use `neon` when a CSS fallback is acceptable.
 
+## Effect + ThreeCanvas render timeout or missing output
+
+Symptom:
+- Render stalls or times out when wrapping `ThreeCanvas` with `<Effect>`.
+
+Checks:
+- Ensure Remotion config uses `withReloaded()` (or equivalent `chromiumOptions.gl = "angle"`).
+- For heavy headless runs, prefer `--chrome-mode=headless-shell --concurrency=0`.
+
+Recommended path:
+- Use `remotion-reloaded render --composition-id <id>` as the enforcement command.
+- Risky combinations are auto-routed to pre-comp.
+- If you need explicit control, run:
+  - `remotion-reloaded precomp --source-composition-id <source-id> --effects-composition-id <effects-id>`
+- Use unsafe override only intentionally:
+  - `--allow-unsafe-single-pass` with timeout guardrails.
+
 ## Three renderer fallback confusion
 
 Symptom:
@@ -78,3 +95,4 @@ Fixes:
 - Run `remotion-reloaded init` in project root.
 - Confirm `remotion.config.*` includes `withReloaded()`.
 - Install missing dependencies in `package.json`.
+- Remember: `doctor` is advisory/preflight. Runtime routing happens in `remotion-reloaded render`.

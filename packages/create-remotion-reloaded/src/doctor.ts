@@ -1,6 +1,13 @@
 import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { defaultLogger, type Logger } from "./logger";
+import {
+  classifyRenderRisk,
+  getRenderEnvironment,
+  type ClassifierChromeMode,
+  type ClassifierRenderer,
+} from "./renderRiskClassifier";
+import { scanProjectRisk } from "./riskScan";
 
 const REMOTION_CONFIG_FILES = [
   "remotion.config.ts",
@@ -85,6 +92,29 @@ const summarizeCheck = (check: DoctorCheck): string => {
   return `${symbol} ${check.name}: ${check.message}`;
 };
 
+const detectChromeMode = (source: string | null): ClassifierChromeMode =>
+  source?.includes("headless-shell") ? "headless-shell" : "default";
+
+const detectRequestedRenderer = (source: string | null): ClassifierRenderer => {
+  if (!source) {
+    return "auto";
+  }
+
+  if (
+    source.includes("webgpu: true") ||
+    source.includes("enableWebGPU: true") ||
+    source.includes("--enable-unsafe-webgpu")
+  ) {
+    return "webgpu";
+  }
+
+  if (source.includes("renderer=\"webgl\"")) {
+    return "webgl";
+  }
+
+  return "auto";
+};
+
 export async function runDoctor(
   options: DoctorOptions = {},
 ): Promise<DoctorResult> {
@@ -160,6 +190,7 @@ export async function runDoctor(
   });
 
   const configPath = findRemotionConfigPath(cwd);
+  let configContents: string | null = null;
   if (!configPath) {
     checks.push({
       name: "remotion.config",
@@ -167,7 +198,7 @@ export async function runDoctor(
       message: "No remotion.config.ts/js/mjs/cjs file found.",
     });
   } else {
-    const configContents = readFileSync(configPath, "utf-8");
+    configContents = readFileSync(configPath, "utf-8");
     if (configContents.includes("withReloaded")) {
       checks.push({
         name: "remotion.config",
@@ -187,6 +218,36 @@ export async function runDoctor(
         message: `${path.basename(configPath)} does not include withReloaded().`,
       });
     }
+  }
+
+  const riskScan = scanProjectRisk(cwd);
+  const classifier = classifyRenderRisk({
+    compositionId: "doctor-project-scan",
+    renderMode: "render",
+    chromeMode: detectChromeMode(configContents),
+    requestedRenderer: detectRequestedRenderer(configContents),
+    containsThreeCanvas: riskScan.containsThreeCanvas,
+    effectTypes: riskScan.effectTypes,
+    effectBackends: riskScan.effectBackends,
+    environment: getRenderEnvironment(),
+    chromiumOptionsGl: configContents?.includes("angle") ? "angle" : undefined,
+    concurrency: 0,
+    colorSpace: "bt709",
+  });
+
+  const reasonCodes = classifier.reasons.map((reason) => reason.code).join(", ");
+  if (classifier.decision === "requires-precomp") {
+    checks.push({
+      name: "Render policy classifier",
+      status: "warn",
+      message: `requires-precomp (${reasonCodes}). Recommended: use Three-native post-processing or run pre-comp fallback. Stable flags: chromiumOptions.gl="angle", --chrome-mode=headless-shell, --concurrency=0.`,
+    });
+  } else {
+    checks.push({
+      name: "Render policy classifier",
+      status: "pass",
+      message: `single-pass-safe (${reasonCodes}). Fingerprint: ${classifier.fingerprint}.`,
+    });
   }
 
   checks.push({
