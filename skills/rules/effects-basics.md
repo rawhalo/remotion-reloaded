@@ -63,6 +63,11 @@ const distortion = interpolate(frame, [0, 60], [0.2, 1.1], {
 - WebGL effects run in browser/local render contexts when WebGL is available.
 - On Lambda, effects with no CSS equivalent use fallback mode `skip`.
 - `neon` has a CSS fallback and remains visible when WebGL is unavailable.
+- Advanced WebGL effects wrapped around live `ThreeCanvas` content are not guaranteed in single-pass headless renders.
+- For reliable output on 3D scenes, prefer `@remotion-reloaded/three` postprocessing.
+- For risky combinations, `remotion-reloaded render --composition-id <id>` is the primary entrypoint and auto-routes to pre-comp when required.
+- Use explicit pre-comp only when you need direct control of source/effects IDs:
+  - `remotion-reloaded precomp --source-composition-id <source-id> --effects-composition-id <effects-id>`
 
 ## Validation Behavior
 

@@ -1,10 +1,10 @@
 # Phase 1: Technical Foundation
 ## Detailed Specification
 
-**Version:** 1.2
+**Version:** 1.3
 **Status:** Ready for Implementation
 **Timeline:** 6-8 weeks
-**Updated:** January 30, 2026
+**Updated:** February 13, 2026
 
 > **Note:** Timeline is 6-8 weeks to account for comprehensive error handling, serverless support, and testing infrastructure.
 
@@ -589,7 +589,7 @@ Unlock GPU-accelerated 3D rendering with modern WebGPU pipeline for particle sys
 | Memory Management | Manual | Automatic |
 | API Design | 1990s OpenGL | Modern, explicit |
 
-### Browser Support (as of Jan 2025)
+### Browser Support (historical snapshot, verify with `doctor`)
 
 | Browser | WebGPU | WebGL |
 |---------|--------|-------|
@@ -600,7 +600,7 @@ Unlock GPU-accelerated 3D rendering with modern WebGPU pipeline for particle sys
 | Headless Chrome | ✅* | ✅ |
 | AWS Lambda | ❌ | ✅ |
 
-*Requires `--enable-unsafe-webgpu` flag
+*Requires `--enable-unsafe-webgpu` flag. Treat this table as historical guidance only; runtime checks and classifier output are authoritative.
 
 ### API Design
 
@@ -791,8 +791,10 @@ A curated library of GPU-accelerated visual effects accessible via simple React 
 1. **One component = one effect** — Simple mental model
 2. **Sensible defaults** — Works out of the box
 3. **Full control available** — Expose all parameters when needed
-4. **Composable** — Stack effects in any order
+4. **Composable with safety gates** — Effect stacks are validated by classifier and may require pre-comp in risky 3D+WebGL combinations
 5. **Performant** — GPU-accelerated, optimized shaders
+
+> For render-time safety rules and pre-comp routing contract, see `docs/PHASE-1-THREE-EFFECTS-RENDER-PLAN.md`.
 
 ### Effect Categories
 
@@ -1177,7 +1179,11 @@ Need to animate something?
 │   └─ Use GPUParticles
 │
 └─ Visual effect (glow, glitch, etc.)?
-    └─ Use @remotion-reloaded/effects
+    ├─ 3D + WebGL-heavy effect stack in render mode?
+    │   └─ Run classifier:
+    │      - `single-pass-safe` -> single-pass
+    │      - `requires-precomp` -> pre-comp fallback
+    └─ Otherwise use @remotion-reloaded/effects directly
 ```
 
 ### Skill File Location
@@ -1297,10 +1303,10 @@ remotion-reloaded/
 
 ### Design Principles
 
-1. **Fail gracefully** — Never crash the render; degrade quality instead
+1. **Never hang renders** — Prefer graceful fallback, but fail fast for unsafe overrides when required
 2. **Actionable messages** — Every error includes what to do about it
 3. **Dev vs Prod** — Verbose warnings in development, silent fallbacks in production
-4. **Early detection** — Catch issues at build/preview time, not during final render
+4. **Early detection + runtime enforcement** — Detect issues in doctor and enforce safe execution path in render CLI
 
 ### GSAP Error Handling
 
@@ -2107,6 +2113,25 @@ checkCompatibility();
 | @react-three/fiber | ^8.15.0 | React bindings |
 | @react-three/drei | ^9.90.0 | Three.js helpers |
 | @react-three/postprocessing | ^2.15.0 | Post-processing |
+
+---
+
+## Phase 1 Closeout Addendum (Three + Effects Rendering)
+
+Real-world validation identified a headless rendering limitation for advanced WebGL effects wrapped around live `ThreeCanvas` content. The closeout strategy is:
+
+1. Prefer **Three-native post-processing** for one-pass 3D workflows.
+2. Provide a first-class **pre-comp (2-pass) fallback** for risky combinations.
+3. Add doctor/classifier guardrails and render-time enforcement so users get reliable outcomes, not only recommendations.
+
+Normative implementation clarifications:
+- Runtime classifier output (`single-pass-safe` or `requires-precomp`) is the render gate.
+- `doctor` output is advisory and must share the same classifier reason taxonomy.
+- Unsafe single-pass requires explicit override flags and timeout safeguards.
+- Pre-comp artifacts and cache keys follow the metadata contract defined in the closeout plan doc.
+
+Detailed implementation plan:
+- [`docs/PHASE-1-THREE-EFFECTS-RENDER-PLAN.md`](./docs/PHASE-1-THREE-EFFECTS-RENDER-PLAN.md)
 
 ---
 

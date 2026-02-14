@@ -58,7 +58,24 @@ npx skills add rawhalo/remotion-reloaded --skill remotion-reloaded
 What this gives you:
 - Reloaded config patching via `init`
 - setup validation via `doctor`
+- classifier-driven render policy via `render`
+- deterministic fallback artifact prep via `precomp`
 - agent guidance for Reloaded packages and patterns
+
+Optional render safety commands:
+
+```bash
+npx remotion-reloaded render --composition-id MyComposition
+npx remotion-reloaded render --composition-id MyComposition --dry-run --resolve-composition-metadata
+npx remotion-reloaded precomp --source-composition-id SourceComp --effects-composition-id EffectsComp
+npx remotion-reloaded precomp --source-composition-id SourceComp --effects-composition-id EffectsComp --dry-run --resolve-composition-metadata
+npx remotion-reloaded precomp clean --retention-days 7
+```
+
+Behavior notes:
+- `render` is the policy gate and auto-routes risky combinations to pre-comp.
+- `doctor` is advisory and preflight-only; it does not enforce routing.
+- `--allow-unsafe-single-pass` is available for explicit expert overrides.
 
 ## 3. Start Agentic Editing
 

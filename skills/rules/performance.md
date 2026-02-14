@@ -26,6 +26,10 @@ These recommendations reflect current package behavior.
 
 - Keep `gl: 'angle'` for headless WebGL compatibility.
 - Enable WebGPU only where deployment/runtime supports it.
+- For large WebGL scenes in headless rendering, `--chrome-mode=headless-shell` and
+  `--concurrency=0` are often the most stable baseline.
+- For planning runs without emitting media, use dry-run routing:
+  - `remotion-reloaded render --composition-id <id> --dry-run --resolve-composition-metadata`
 
 ## Measure
 

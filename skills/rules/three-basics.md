@@ -51,3 +51,10 @@ import { detectWebGpuSupport, resolveRenderer } from '@remotion-reloaded/three';
 const supported = await detectWebGpuSupport();
 const resolved = resolveRenderer('webgpu', supported);
 ```
+
+## Combining with `@remotion-reloaded/effects`
+
+- CSS/SVG effects may work when wrapping `ThreeCanvas`, but advanced WebGL effects are not fully reliable in single-pass headless rendering.
+- Prefer `@remotion-reloaded/three` postprocessing for 3D-first looks.
+- For render-time safety, use `remotion-reloaded render --composition-id <id>` and let classifier routing decide single-pass vs pre-comp.
+- Use explicit pre-comp only when you need direct source/effects composition control.
