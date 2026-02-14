@@ -56,6 +56,38 @@ describe("Effect", () => {
     expect(second).toContain("blur(24.00px)");
     expect(first).not.toEqual(second);
   });
+
+  it("uses full-size wrapper defaults for standalone overlay effects", () => {
+    const html = renderToStaticMarkup(
+      <Effect type="vignette" darkness={0.4}>
+        <div
+          style={{
+            position: "absolute",
+            top: "50%",
+            transform: "translateY(-50%)",
+          }}
+        >
+          Centered
+        </div>
+      </Effect>,
+    );
+
+    expect(html).toContain('data-effect-type="vignette"');
+    expect(html).toContain("width:100%");
+    expect(html).toContain("height:100%");
+    expect(html).toContain("Centered");
+  });
+
+  it("does not force full-size wrapper for non-overlay effects", () => {
+    const html = renderToStaticMarkup(
+      <Effect type="blur" radius={4}>
+        <span>Inline</span>
+      </Effect>,
+    );
+
+    expect(html).not.toContain("width:100%");
+    expect(html).not.toContain("height:100%");
+  });
 });
 
 describe("EffectStack", () => {

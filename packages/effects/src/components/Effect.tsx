@@ -237,8 +237,10 @@ export function Effect(props: EffectProps): ReactElement | null {
     resolved.cssFilter,
     typeof style?.filter === "string" ? style.filter : undefined,
   );
+  const shouldFill = resolved.overlayStyle !== undefined;
 
   const wrapperStyle: CSSProperties = {
+    ...(shouldFill ? { height: "100%", width: "100%" } : {}),
     ...resolved.wrapperStyle,
     ...style,
     ...(filter ? { filter } : {}),
