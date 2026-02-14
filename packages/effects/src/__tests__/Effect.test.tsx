@@ -76,4 +76,29 @@ describe("EffectStack", () => {
     expect(blurIndex).toBeLessThan(sepiaIndex);
     expect(html).toContain("<span>Layered</span>");
   });
+
+  it("ensures stack layers are full-size to preserve absolute positioning", () => {
+    const html = renderToStaticMarkup(
+      <EffectStack>
+        <Effect type="vignette" darkness={0.4} />
+        <Effect type="film" grain={0.1} />
+        <div
+          style={{
+            position: "absolute",
+            top: "50%",
+            transform: "translateY(-50%)",
+          }}
+        >
+          Centered
+        </div>
+      </EffectStack>,
+    );
+
+    const widthMatches = html.match(/width:100%/g) ?? [];
+    const heightMatches = html.match(/height:100%/g) ?? [];
+
+    expect(widthMatches.length).toBeGreaterThanOrEqual(2);
+    expect(heightMatches.length).toBeGreaterThanOrEqual(2);
+    expect(html).toContain("Centered");
+  });
 });
