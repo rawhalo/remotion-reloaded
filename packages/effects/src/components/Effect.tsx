@@ -1,5 +1,7 @@
 import { getRenderEnvironment } from "@remotion-reloaded/config";
 import {
+  Children,
+  isValidElement,
   useEffect,
   useId,
   useRef,
@@ -24,6 +26,34 @@ interface WebGLEffectWrapperProps {
   plan: WebGLFilterPlan;
   style: CSSProperties | undefined;
   type: EffectType;
+}
+
+function hasOnlyAbsolutePositionedChildren(children: ReactNode): boolean {
+  let sawRenderableChild = false;
+  let allRenderableChildrenAreAbsolute = true;
+
+  Children.forEach(children, (child) => {
+    if (child === null || child === undefined || child === false) {
+      return;
+    }
+
+    sawRenderableChild = true;
+
+    if (!isValidElement(child)) {
+      allRenderableChildrenAreAbsolute = false;
+      return;
+    }
+
+    const style =
+      (child.props as { style?: CSSProperties | undefined }).style ?? undefined;
+    if (style?.position === "absolute") {
+      return;
+    }
+
+    allRenderableChildrenAreAbsolute = false;
+  });
+
+  return sawRenderableChild && allRenderableChildrenAreAbsolute;
 }
 
 function WebGLEffectWrapper({
@@ -237,7 +267,9 @@ export function Effect(props: EffectProps): ReactElement | null {
     resolved.cssFilter,
     typeof style?.filter === "string" ? style.filter : undefined,
   );
-  const shouldFill = resolved.overlayStyle !== undefined;
+  const shouldFill =
+    resolved.overlayStyle !== undefined &&
+    hasOnlyAbsolutePositionedChildren(children);
 
   const wrapperStyle: CSSProperties = {
     ...(shouldFill ? { height: "100%", width: "100%" } : {}),

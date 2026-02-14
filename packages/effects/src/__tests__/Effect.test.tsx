@@ -88,6 +88,18 @@ describe("Effect", () => {
     expect(html).not.toContain("width:100%");
     expect(html).not.toContain("height:100%");
   });
+
+  it("does not force full-size wrapper for overlay effects with in-flow children", () => {
+    const html = renderToStaticMarkup(
+      <Effect type="film" grain={0.14} seed={33} sepia={0.2} vignette={0.35}>
+        <div style={{ height: 140, width: 140 }}>Inline</div>
+      </Effect>,
+    );
+
+    expect(html).toContain('data-effect-type="film"');
+    expect(html).not.toContain("width:100%");
+    expect(html).not.toContain("height:100%");
+  });
 });
 
 describe("EffectStack", () => {

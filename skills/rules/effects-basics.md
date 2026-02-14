@@ -63,7 +63,7 @@ const distortion = interpolate(frame, [0, 60], [0.2, 1.1], {
 - WebGL effects run in browser/local render contexts when WebGL is available.
 - On Lambda, effects with no CSS equivalent use fallback mode `skip`.
 - `neon` has a CSS fallback and remains visible when WebGL is unavailable.
-- Layout guard: `EffectStack` layers and standalone overlay effects (`vignette`, `film`) default to full-size wrappers (`width`/`height: 100%`) to avoid absolute-child collapse; override via `style` when needed.
+- Layout guard: `EffectStack` layers default to full-size wrappers (`width`/`height: 100%`). Standalone overlay effects (`vignette`, `film`) only auto-fill when wrapping absolute-positioned children to avoid collapse without changing normal in-flow layout.
 - Advanced WebGL effects wrapped around live `ThreeCanvas` content are not guaranteed in single-pass headless renders.
 - For reliable output on 3D scenes, prefer `@remotion-reloaded/three` postprocessing.
 - For risky combinations, `remotion-reloaded render --composition-id <id>` is the primary entrypoint and auto-routes to pre-comp when required.
